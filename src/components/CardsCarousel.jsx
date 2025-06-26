@@ -124,14 +124,7 @@ const cardData = [
   },
 ];
 
-const CardsCarousel = ({
-  Img,
-  Offer,
-  Restaurant,
-  Name,
-  OriginalPrice,
-  Price,
-}) => {
+const CardsCarousel = () => {
   return (
     <div className="w-full sm:px-4 md:px-48 py-5">
       <div className="bg-[#F6EEE8] p-4">
@@ -146,19 +139,23 @@ const CardsCarousel = ({
           scrollbar={{ hide: true }}
           slidesPerView={5}
           breakpoints={{
-          400: {
-            slidesPerView: 2,
-            spaceBetween: 5,
-          },
-          768: {
-            slidesPerView: 4,
-            spaceBetween: 20,
-          },
-          1024: {
-            slidesPerView: 5,
-            spaceBetween: 5,
-          },
-        }}
+            0: {
+              slidesPerView: 2,
+              spaceBetween: 5,
+            },
+            400: {
+              slidesPerView: 2,
+              spaceBetween: 5,
+            },
+            768: {
+              slidesPerView: 4,
+              spaceBetween: 20,
+            },
+            1024: {
+              slidesPerView: 5,
+              spaceBetween: 5,
+            },
+          }}
           modules={[Scrollbar]}
           className="mySwiper my-5 flex flex-wrap space-x-4"
         >

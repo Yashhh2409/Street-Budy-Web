@@ -52,8 +52,8 @@ const DineIn = () => {
 
   return (
     <>
-      <div className="w-full md:px-48">
-        <div className="bg-[#F7DFCC] rounded-lg p-5">
+      <div className="w-full px-4 md:px-48">
+        <div className="bg-[#F7DFCC] rounded-lg px-5 md:p-5">
           <div className="flex items-center justify-between">
             <div className="w-[100px] md:w-[200px] p-2">
               <Image
@@ -80,9 +80,9 @@ const DineIn = () => {
             </div>
 
             {isMobile ? (
-              <div className="min-w-[160px] text-white font-bold md:w-[150px] my-4 flex flex-col items-center self-end space-x-4">
+              <div className="min-w-[160px] text-white font-bold md:w-[150px] my-4 flex flex-col items-center justify-center self-end space-x-4">
                 <p className="text-black">Want to Dine In?</p>
-                <button className="bg-orange-500  px-2 py-1 rounded-md">View Restaurants</button>
+                <button className="bg-orange-500 text-sm  px-2 py-0.5 rounded-md">View Restaurants</button>
               </div>
             ) : (
               <div className="w-[120px] md:w-[150px] m-2 flex items-center justify-center space-x-4">

@@ -5,8 +5,8 @@ import React from "react";
 
 const NewRestaurantsCard = () => {
   return (
-    <div className="w-[350px] bg-white p-2 rounded-lg flex justify-between gap-2">
-      <div className="w-2/5 h-[100px] border-4 border-[#F7DFCC] rounded-lg overflow-hidden">
+    <div className="w-full md:w-[350px] bg-white p-2 rounded-lg flex justify-between gap-2">
+      <div className="w-[150px] md:w-2/5 h-[100px] border-4 border-[#F7DFCC] rounded-lg overflow-hidden">
         <Image
           src={"/assets/Restaurant/icon-1.png"}
           width={400}

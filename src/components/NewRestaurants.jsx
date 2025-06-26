@@ -6,10 +6,10 @@ import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 const NewRestaurants = () => {
   return (
     <>
-    <div className='w-full px-48'>
-        <div className=' relative bg-[#F7DFCC] p-2 px-4'>
-            <p className='text-xl text-center font-bold py-4'>New on StackFood</p>
-        <div className='flex gap-4 flex-wrap'>
+    <div className='w-full md:px-48'>
+        <div className=' relative bg-[#F7DFCC] p-2 px-4 py-4'>
+            <p className='text-xl text-start md:text-center font-bold py-4'>New on StackFood</p>
+        <div className='flex gap-4 md:flex-wrap overflow-x-scroll no-scrollbar'>
            <NewRestaurantsCard />
            <NewRestaurantsCard />
            <NewRestaurantsCard />
