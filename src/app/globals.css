@@ -24,3 +24,45 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Optional: Custom classes using @layer utilities */
+@layer utilities {
+  .btn-primary {
+    @apply bg-[var(--primary-color)] text-white px-4 py-2 rounded-xl hover:bg-orange-600 transition;
+  }
+
+  .input-field {
+    @apply w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)];
+  }
+
+  .card {
+    @apply bg-white p-4 rounded-2xl shadow-md;
+  }
+
+  .green-veg-icon-border {
+    @apply w-3 h-3 border-2 border-green-500 flex items-center justify-center;
+  }
+
+  .green-veg-icon-dot {
+    @apply w-1.5 h-1.5 border-2 border-green-500 rounded-full bg-green-500;
+  }
+
+   .red-non-veg-icon-border {
+    @apply w-3 h-3 border-2 border-red-500 flex items-center justify-center;
+  }
+
+  .red-non-veg-icon-dot {
+    @apply w-1.5 h-1.5 border-2 border-red-500 rounded-full bg-red-500;
+  }
+
+  /* globals.css */
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+
+}

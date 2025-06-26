@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+"use client";
 
-## Getting Started
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
-First, run the development server:
+const banners = [
+  { id: "1", img: "/assets/OfferBanners/offerBanner1.png" },
+  { id: "2", img: "/assets/OfferBanners/offerBanner2.png" },
+  { id: "3", img: "/assets/OfferBanners/offerBanner3.png" },
+  { id: "4", img: "/assets/OfferBanners/offerBanner4.png" },
+  { id: "5", img: "/assets/OfferBanners/offerBanner5.png" },
+];
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+const ITEMS_PER_PAGE = 3;
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+const OfferCarousel = () => {
+  const [curr, setCurr] = useState(0);
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+  const next = () => {
+    setCurr((prev) => (prev + ITEMS_PER_PAGE) % banners.length);
+  };
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+  const prev = () => {
+    setCurr((prev) =>
+      prev - ITEMS_PER_PAGE < 0
+        ? banners.length - ITEMS_PER_PAGE
+        : prev - ITEMS_PER_PAGE
+    );
+  };
 
-## Learn More
+  useEffect(() => {
+    const timer = setInterval(() => {
+      next();
+    }, 3000);
 
-To learn more about Next.js, take a look at the following resources:
+    return () => clearInterval(timer); 
+  }, [curr]);
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+  // Get visible banners (loop if needed)
+  const visibleBanners = [...banners, ...banners].slice(curr, curr + ITEMS_PER_PAGE);
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+  return (
+    <div className="bg-[#171A29] text-white p-5 px-4 sm:px-10 lg:px-48">
+      <div className="relative w-full h-[200px] overflow-hidden">
+        <div className="flex space-x-3 transition-transform ease-in-out duration-300">
+          {visibleBanners.map((banner, index) => (
+            <div
+              key={index}
+              className="sm:w-1/3 md:w-2/3 lg:w-3/3 h-[200px] rounded-lg overflow-hidden"
+            >
+              <Image
+                src={banner.img}
+                alt={`Banner ${banner.id}`}
+                width={500}
+                height={200}
+                priority 
+                className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+              />
+            </div>
+          ))}
+        </div>
 
-## Deploy on Vercel
+        {/* Arrows */}
+        <div className="absolute top-1/2 left-2 -translate-y-1/2 z-10">
+          <button
+            onClick={prev}
+            className="w-10 h-10 bg-white text-black rounded-full flex items-center justify-center shadow-md"
+          >
+            <FontAwesomeIcon icon={faArrowLeft} />
+          </button>
+        </div>
+        <div className="absolute top-1/2 right-2 -translate-y-1/2 z-10">
+          <button
+            onClick={next}
+            className="w-10 h-10 bg-white text-black rounded-full flex items-center justify-center shadow-md"
+          >
+            <FontAwesomeIcon icon={faArrowRight} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+export default OfferCarousel;
