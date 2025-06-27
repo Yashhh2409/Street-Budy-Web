@@ -1,4 +1,6 @@
-import React from "react";
+"use client"
+
+import React, { useState } from "react";
 import RestaurantCard from "./Custom/RestaurantCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
@@ -7,6 +9,15 @@ import RestaurantsList from "@/data/RestaurantList";
 
 
 const AllRestaurantsList = () => {
+
+  const [showAll, setShowAll] = useState(false);
+
+   const visibleRestaurants = showAll ? RestaurantsList : RestaurantsList.slice(0, 8);
+
+  const toggleButton = () => {
+    setShowAll((prev) => !prev)
+  }
+
   return (
     <div className="w-full md:px-48">
       <div className="w-full">
@@ -15,7 +26,7 @@ const AllRestaurantsList = () => {
             <div className="flex md:flex-col justify-between items-center my-4 md:my-0">
               <p className="font-bold text-md md:text-xl">All Restaurants</p>
               <p className="text-gray-500 text-sm md:text-md">
-                13 Restaurants near you
+                {visibleRestaurants.length} Restaurants near you
               </p>
             </div>
             <div className="flex space-x-2 justify-center">
@@ -36,8 +47,8 @@ const AllRestaurantsList = () => {
               </button>
             </div>
           </div>
-          <div className="w-full flex flex-wrap space-x-4 space-y-4">
-            {RestaurantsList.map((restaurant) => (
+          <div className="w-full flex flex-wrap justify-center gap-x-4 gap-y-4">
+            {visibleRestaurants.map((restaurant) => (
               <RestaurantCard
                 key={restaurant.id}
                 layout="square"
@@ -51,8 +62,8 @@ const AllRestaurantsList = () => {
               />
             ))}
           </div>
-          <button className="w-fit self-center px-4 py-2 bg-orange-500 font-bold rounded-md text-white">
-            View More
+          <button onClick={toggleButton} className="w-fit self-center px-4 py-2 bg-orange-500 font-bold rounded-md text-white">
+            {showAll ? "View Less" : "View More"}
           </button>
         </div>
       </div>

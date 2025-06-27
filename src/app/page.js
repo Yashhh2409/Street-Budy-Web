@@ -2,8 +2,11 @@
 import AdBanner from '@/components/AdBanner'
 import AllRestaurantsList from '@/components/AllRestaurantsList'
 import CardsCarousel from '@/components/CardsCarousel'
+import MenuBar from '@/components/Custom/MenuBar'
 import DineIn from '@/components/DineIn'
 import CardComponent from '@/components/FoodTypeCarouel'
+import Footer from '@/components/Footer'
+import MobileMenuBar from '@/components/MobileMenuBar'
 import NewRestaurants from '@/components/NewRestaurants'
 import OfferCarousel from '@/components/OfferCarousel'
 import RestaurantCardSlider from '@/components/RestaurantCardSlider'
@@ -20,6 +23,8 @@ const page = () => {
       <NewRestaurants />
       <AdBanner />
       <AllRestaurantsList />
+      <Footer />
+      <MobileMenuBar />
     </div>
   )
 }
