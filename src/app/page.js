@@ -1,5 +1,6 @@
 
 import AdBanner from '@/components/AdBanner'
+import AllRestaurantsList from '@/components/AllRestaurantsList'
 import CardsCarousel from '@/components/CardsCarousel'
 import DineIn from '@/components/DineIn'
 import CardComponent from '@/components/FoodTypeCarouel'
@@ -18,6 +19,7 @@ const page = () => {
       <RestaurantCardSlider />
       <NewRestaurants />
       <AdBanner />
+      <AllRestaurantsList />
     </div>
   )
 }

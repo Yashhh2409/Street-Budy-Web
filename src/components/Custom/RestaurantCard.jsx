@@ -3,13 +3,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import React from "react";
 
-const RestaurantCard = () => {
+const RestaurantCard = ({ layout = "horizontal", Img, Distance, Icon, Name, Description, Delivery_in, Rating  }) => {
+  const isSquare = layout === "square";
+
   return (
     <>
-      <div className="relative min-w-[260px] h-[190px] rounded-lg overflow-hidden">
+      <div
+        className={`relative min-w-[260px] shadow-md ${
+          isSquare ? "h-[250px] w-full md:w-[260px]" : "h-[190px]"
+        } rounded-lg overflow-hidden`}
+      >
         <div className="relative overflow-hidden w-full h-1/2">
           <Image
-            src={"/assets/Restaurant/restCard-1.png"}
+            src={Img}
             width={300}
             height={250}
             alt="Img"
@@ -34,7 +40,7 @@ const RestaurantCard = () => {
             ></div>
 
             <p className="absolute font-semibold bottom-[0.5px] right-[22px] text-orange-500 text-sm">
-              1.3 km
+              {Distance}
             </p>
           </div>
         </div>
@@ -42,28 +48,34 @@ const RestaurantCard = () => {
         <div className="w-full h-1/2 bg-white p-1">
           <div className="flex justify-between">
             <div></div>
-            <div className="w-[175px] p-1 self-end">
-              <p className="text-md font-bold">Hungry Puppets</p>
-              <p className="text-sm truncate text-gray-500">
-                Bengali, Indian, Pizza, sdfcsghiudf
+            <div className={`${isSquare ? "self-center w-full pt-9 px-2" : "self-end w-[175px] p-1"}`}>
+              <p className={`text-md font-bold ${isSquare ? "text-center" : ""} `}>{Name}</p>
+              <p className={`text-sm truncate text-gray-500 ${isSquare ? "w-[200px] self-center-safe text-center truncate ml-4" : ""}`}>
+                {Description}
               </p>
             </div>
           </div>
           <div className="flex space-x-2 items-center justify-center p-2 text-sm">
             <div className="flex items-center space-x-1">
               <FontAwesomeIcon icon={faStar} />
-              <p>5.8</p>
+              <p>{Rating}</p>
             </div>
             <div className="flex items-center space-x-1">
               <FontAwesomeIcon icon={faClock} />
-              <p>30-40-min</p>
+              <p>{Delivery_in}</p>
             </div>
           </div>
         </div>
 
-        <div className="absolute bottom-3 left-10 -translate-1/2 w-[65px]  h-[65px] rounded-xl border-4 border-[#F6E5DA] overflow-hidden ">
+        <div
+          className={`absolute  w-[65px]  h-[65px] rounded-xl border-4 border-[#F6E5DA] overflow-hidden ${
+            isSquare
+              ? "top-1/2 -translate-x-1/2 -translate-y-1/2 left-1/2"
+              : "bottom-3 left-10 -translate-1/2"
+          }`}
+        >
           <Image
-            src={"/assets/Restaurant/icon-1.png"}
+            src={Icon}
             alt="img"
             width={400}
             height={200}

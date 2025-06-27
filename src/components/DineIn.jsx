@@ -69,6 +69,7 @@ const DineIn = () => {
               <div className="hidden md:flex  gap-2">
                 {DineinCards.slice(0, 3).map((card) => (
                   <DineinCard
+                  key={card.id}
                     Img={card.icon}
                     Name={card.name}
                     Address={card.address}
