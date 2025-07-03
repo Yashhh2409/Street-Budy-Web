@@ -1,10 +1,10 @@
 import React from "react";
 import Image from "next/image";
 
-const Cards = ({Img, Offer, Restaurant, Name, OriginalPrice, Price, isVeg}) => {
+const Cards = ({Img, Offer, Restaurant, Name, OriginalPrice, Price, isVeg, onClick={onClick}}) => {
   return (
     <>
-      <div className="max-w-[200px] h-[280px] flex flex-col bg-white rounded-xl">
+      <div onClick={onClick} className="max-w-[200px] h-[280px] flex flex-col bg-white rounded-xl">
         <div className="max-w-[200px] h-[150px] object-cover relative">
 
           <div className="h-[160px] rounded-t-xl overflow-hidden">

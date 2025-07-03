@@ -1,14 +1,16 @@
 import { faClock, faHeart, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
-const RestaurantCard = ({ layout = "horizontal", Img, Distance, Icon, Name, Description, Delivery_in, Rating  }) => {
+const RestaurantCard = ({ layout = "horizontal", id, Img, Distance, Icon, Name, Description, Delivery_in, Rating  }) => {
+
   const isSquare = layout === "square";
 
   return (
     <>
-      <div
+      <Link href={`/restaurant/${id}`}
         className={`relative min-w-[260px] shadow-md ${
           isSquare ? "h-[250px] w-full md:w-[260px]" : "h-[190px]"
         } rounded-lg overflow-hidden`}
@@ -50,7 +52,7 @@ const RestaurantCard = ({ layout = "horizontal", Img, Distance, Icon, Name, Desc
             <div></div>
             <div className={`${isSquare ? "self-center w-full pt-9 px-2" : "self-end w-[175px] p-1"}`}>
               <p className={`text-md font-bold ${isSquare ? "text-center" : ""} `}>{Name}</p>
-              <p className={`text-sm truncate text-gray-500 ${isSquare ? "w-[200px] self-center-safe text-center truncate ml-4" : ""}`}>
+              <p className={`text-sm truncate text-gray-500 ${isSquare ? "w-[200px] self-center-safe text-center truncate ml-16 md:ml-4" : ""}`}>
                 {Description}
               </p>
             </div>
@@ -82,7 +84,7 @@ const RestaurantCard = ({ layout = "horizontal", Img, Distance, Icon, Name, Desc
             className="w-full h-full object-contain hover:scale-125 transition-transform duration-300"
           />
         </div>
-      </div>
+      </Link>
     </>
   );
 };

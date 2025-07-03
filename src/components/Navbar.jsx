@@ -10,25 +10,25 @@ import {
   faLock,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
-
+import Link from "next/link";
 
 const Navbar = () => {
   return (
     <>
       <div className="w-full bg-white p-5 flex justify-between px-48">
         <div className="flex items-center space-x-4 text-xl">
-          <div className="flex items-center gap-2">
-            <Image src="/assets/sb-logo.png" width={50} height={50} className="w-[30px]" />
+          <Link href={"/"} className="flex items-center gap-2">
+            <Image src="/assets/sb-logo.png" width={50} height={50} alt="logo" className="w-[30px]" />
             <p className="text-[25px] font-bold text-amber-600">StackFood</p>
-          </div>
+          </Link>
           <ul>
             <li>
-              <a href="">Home</a>
+              <a href="/">Home</a>
             </li>
           </ul>
           <ul>
             <li>
-              <a href="">Categories</a>
+              <a href="/categories">Categories</a>
             </li>
           </ul>
           <ul>

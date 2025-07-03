@@ -65,4 +65,21 @@ body {
 }
 
 
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: inline-block;
+  will-change: transform;
+  animation: marquee 15s linear infinite;
+}
+
+
+
 }

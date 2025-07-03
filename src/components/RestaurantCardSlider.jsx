@@ -23,6 +23,7 @@ const RestaurantCardSlider = () => {
           {RestaurantsList.map((restaurant) => (
             <RestaurantCard
               key={restaurant.id}
+              id={restaurant.id}
               Img={restaurant.image}
               Distance={restaurant.distance}
               Icon={restaurant.icon}

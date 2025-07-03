@@ -8,6 +8,8 @@ const RestaurantsList = [
     distance: "1.4 km",
     rating: "5.8",
     delevery_in: "30-40 min",
+    address: "Hinjewadi phase 2, Pune",
+    start_from: "20"
   },
   {
     id: "2",
@@ -18,6 +20,8 @@ const RestaurantsList = [
     distance: "2.1 km",
     rating: "4.7",
     delevery_in: "25-35 min",
+    address: "Chinchwad, Pune",
+    start_from: "20"
   },
   {
     id: "3",
@@ -28,6 +32,8 @@ const RestaurantsList = [
     distance: "3.5 km",
     rating: "4.5",
     delevery_in: "30-40 min",
+    address: "Chinchwad, Pune",
+    start_from: "20"
   },
   {
     id: "4",

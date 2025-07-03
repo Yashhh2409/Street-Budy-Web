@@ -11,6 +11,7 @@ import RestaurantsList from "@/data/RestaurantList";
 const AllRestaurantsList = () => {
 
   const [showAll, setShowAll] = useState(false);
+  const [selectedRestaurant, setSelectedRestaurant] = useState(false);
 
    const visibleRestaurants = showAll ? RestaurantsList : RestaurantsList.slice(0, 8);
 
@@ -49,7 +50,7 @@ const AllRestaurantsList = () => {
           </div>
           <div className="w-full flex flex-wrap justify-center gap-x-4 gap-y-4">
             {visibleRestaurants.map((restaurant) => (
-              <RestaurantCard
+              <RestaurantCard 
                 key={restaurant.id}
                 layout="square"
                 Img={restaurant.image}
