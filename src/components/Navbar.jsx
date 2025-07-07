@@ -33,12 +33,12 @@ const Navbar = () => {
           </ul>
           <ul>
             <li>
-              <a href="">Cuisines</a>
+              <a href="/cuisines">Cuisines</a>
             </li>
           </ul>
           <ul>
             <li>
-              <a href="">Restaurants</a>
+              <a href="/restaurants">Restaurants</a>
             </li>
           </ul>
         </div>

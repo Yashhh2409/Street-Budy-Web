@@ -3,76 +3,78 @@ import CuisineCard from "./Custom/CuisineCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
-const cuisinesData = [
-  {
-    id: "1",
-    name: "Bengali",
-    img: "/assets/Cuisines/cuisine-1.png",
-  },
-  {
-    id: "2",
-    name: "Indian",
-    img: "/assets/Cuisines/cuisine-2.png",
-  },
-  {
-    id: "3",
-    name: "Bengali",
-    img: "/assets/Cuisines/cuisine-1.png",
-  },
-  {
-    id: "4",
-    name: "Indian",
-    img: "/assets/Cuisines/cuisine-2.png",
-  },
-  {
-    id: "5",
-    name: "Bengali",
-    img: "/assets/Cuisines/cuisine-1.png",
-  },
-  {
-    id: "6",
-    name: "Indian",
-    img: "/assets/Cuisines/cuisine-2.png",
-  },
-  {
-    id: "7",
-    name: "Bengali",
-    img: "/assets/Cuisines/cuisine-1.png",
-  },
-  {
-    id: "8",
-    name: "Indian",
-    img: "/assets/Cuisines/cuisine-2.png",
-  },
-  {
-    id: "9",
-    name: "Bengali",
-    img: "/assets/Cuisines/cuisine-1.png",
-  },
-  {
-    id: "10",
-    name: "Indian",
-    img: "/assets/Cuisines/cuisine-2.png",
-  },
+import cuisinesData from "@/data/CuisinesList";
 
-  {
-    id: "11",
-    name: "Bengali",
-    img: "/assets/Cuisines/cuisine-1.png",
-  },
-  {
-    id: "12",
-    name: "Indian",
-    img: "/assets/Cuisines/cuisine-2.png",
-  },
-];
+// const cuisinesData = [
+//   {
+//     id: "1",
+//     name: "Bengali",
+//     img: "/assets/Cuisines/cuisine-1.png",
+//   },
+//   {
+//     id: "2",
+//     name: "Indian",
+//     img: "/assets/Cuisines/cuisine-2.png",
+//   },
+//   {
+//     id: "3",
+//     name: "Bengali",
+//     img: "/assets/Cuisines/cuisine-1.png",
+//   },
+//   {
+//     id: "4",
+//     name: "Indian",
+//     img: "/assets/Cuisines/cuisine-2.png",
+//   },
+//   {
+//     id: "5",
+//     name: "Bengali",
+//     img: "/assets/Cuisines/cuisine-1.png",
+//   },
+//   {
+//     id: "6",
+//     name: "Indian",
+//     img: "/assets/Cuisines/cuisine-2.png",
+//   },
+//   {
+//     id: "7",
+//     name: "Bengali",
+//     img: "/assets/Cuisines/cuisine-1.png",
+//   },
+//   {
+//     id: "8",
+//     name: "Indian",
+//     img: "/assets/Cuisines/cuisine-2.png",
+//   },
+//   {
+//     id: "9",
+//     name: "Bengali",
+//     img: "/assets/Cuisines/cuisine-1.png",
+//   },
+//   {
+//     id: "10",
+//     name: "Indian",
+//     img: "/assets/Cuisines/cuisine-2.png",
+//   },
+
+//   {
+//     id: "11",
+//     name: "Bengali",
+//     img: "/assets/Cuisines/cuisine-1.png",
+//   },
+//   {
+//     id: "12",
+//     name: "Indian",
+//     img: "/assets/Cuisines/cuisine-2.png",
+//   },
+// ];
 
 const CuisineSlider = () => {
 
  
   return (
-    <div className="w-full md:px-48 my-4">
-      <div className="w-full bg-[#F7DFCC] py-4">
+    // <div className="w-full md:px-48 my-4">
+      <div style={{backgroundImage: `url("/assets/Cuisines/cuisine_bg.svg")`}} className="w-full py-4">
 
       
         <div className="flex justify-between p-3">
@@ -92,7 +94,7 @@ const CuisineSlider = () => {
       </div>
 
       </div>
-    </div>
+    // </div>
   );
 };
 

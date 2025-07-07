@@ -1,21 +1,76 @@
-import React from "react";
+"use client";
+import React, { useMemo, useState } from "react";
 
 import RestaurantsList from "@/data/RestaurantList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
+import Image from "next/image";
 import {
   faBullhorn,
   faClock,
+  faFilter,
   faHeart,
   faLocationDot,
+  faSearch,
   faShareNodes,
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
-import Image from "next/image";
 import RestaurantOfferCarousel from "@/components/restaurant/RestaurantOfferCarousel";
 import CardsCarousel from "@/components/CardsCarousel";
+import FoodItemsCard from "@/components/restaurant/FoodItemsCard";
+import FoodItems from "@/data/FoodItems";
+import useMediaQuery from "@/hooks/useMediaQuery";
+import Footer from "@/components/Footer";
+import MobileRestaurantDetailsBox from "@/components/restaurant/MobileRestaurantDetailsBox";
+import DesktopRestaurantDetailsBox from "@/components/restaurant/DesktopRestaurantDetailsBox";
+
+const FilterMenus = [
+  {
+    id: "1",
+    name: "All",
+  },
+  {
+    id: "2",
+    name: "Veg",
+  },
+  {
+    id: "3",
+    name: "Non-Veg",
+  },
+];
 
 const Restaurant = ({ params }) => {
-  const { id } = params;
+  const { id } = React.use(params);
+
+  const isMobile = useMediaQuery("(max-width: 767px)");
+
+  const [isfilterOpen, setIsFilterOpen] = useState(false);
+  const [activeFilter, setActiveFilter] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filterToggle = () => {
+    setIsFilterOpen((prev) => !prev);
+  };
+
+  const filteredFoodItems = useMemo(() => {
+    // Filter by category
+    let items = FoodItems;
+
+    if (activeFilter === "Veg") {
+      items = items.filter((item) => item.isVeg);
+    } else if (activeFilter === "Non-Veg") {
+      items = items.filter((item) => !item.isVeg);
+    }
+
+    // Filter by search query
+    if (searchQuery.trim() !== "") {
+      items = items.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    return items;
+  }, [activeFilter, searchQuery]);
 
   const restaurant = RestaurantsList.find((item) => item.id === id);
 
@@ -31,88 +86,127 @@ const Restaurant = ({ params }) => {
           }}
           className="relative w-full h-[250px] rounded-b-3xl flex justify-center"
         >
-          <div className="absolute w-[90%] md:w-[97%] md:h-[230px] bg-white -bottom-36 rounded-md overflow-hidden">
-            <div className="w-full bg-green-700 text-white font-bold rounded-t-md p-2 flex items-center justify-end gap-3">
-              <FontAwesomeIcon
-                icon={faBullhorn}
-                className="text-2xl -rotate-25"
-              />
-
-              <div className="relative w-[75%] place-self-end overflow-hidden">
-                <div className="flex whitespace-nowrap animate-marquee">
-                  <p className="mr-8">
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                    Accusantium tempora ipsum, omnis explicabo optio nostrum non
-                    error eaque libero excepturi consequuntur asperiores natus
-                    dolorum fuga. Ea debitis sit ullam sapiente?
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="absolute w-[80px] md:w-[200px] h-[80px] md:h-[200px] bg-red-500 rounded-full overflow-hidden shadow-xl border-[2px] border-orange-400 top-2 left-10">
-              <Image
-                src={restaurant.icon}
-                width={500}
-                height={500}
-                className="w-full h-full object-cover rounded-full hover:scale-125 transition-transform duration-300"
-              />
-            </div>
-
-            <div className="w-full md:w-[77%] place-self-end flex flex-col md:flex-row gap-2 p-2">
-              <div className="w-full md:w-1/2 flex flex-col justify-between">
-                <div className="flex justify-between">
-                  <div>
-                    <p className="text-gray-800 font-bold">{restaurant.name}</p>
-                    <p className="text-gray-500">{restaurant.address}</p>
-                    <p className="text-gray-500">
-                      Start from: ₹ {restaurant.start_from}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-col items-center justify-center gap-2 text-gray-500 text-xl">
-                    <FontAwesomeIcon icon={faHeart} />
-                    <FontAwesomeIcon icon={faShareNodes} />
-                  </div>
-                </div>
-
-                <div className="w-full flex items-center justify-evenly mt-6">
-                  <div className="flex flex-col items-center justify-center gap-1 text-md place-self-end">
-                    <FontAwesomeIcon
-                      icon={faClock}
-                      className="text-orange-400 text-xl"
-                    />
-                    <p>{restaurant.delevery_in}</p>
-                  </div>
-
-                  <div className=" flex flex-col items-center justify-center gap-1 text-md place-self-end">
-                    <FontAwesomeIcon
-                      icon={faLocationDot}
-                      className="text-orange-400 text-xl"
-                    />
-                    <p>{restaurant.distance}</p>
-                  </div>
-
-                  <div className=" flex flex-col items-center justify-center gap-1 text-md place-self-end">
-                    <FontAwesomeIcon
-                      icon={faStar}
-                      className="text-orange-400 text-xl"
-                    />
-                    <p>{restaurant.rating}</p>
-                  </div>
-                </div>
-              </div>
-              <div className="w-full md:w-1/2 p-4">
-                <RestaurantOfferCarousel />
-              </div>
-            </div>
-          </div>
+          {isMobile ? (
+            <MobileRestaurantDetailsBox />
+          ) : (
+           <DesktopRestaurantDetailsBox RestaurantIcon={restaurant.icon} RestaurantName={restaurant.name} RestaurantAddress={restaurant.address} Restaurant_Start_From={restaurant.start_from} RestaurantDistance={restaurant.distance} RestaurantRating={restaurant.rating} Restaurant_Delevery_In={restaurant.delevery_in} />
+          )}
         </div>
 
-      <div className="w-full  mt-40 bg-green-400">
-        <CardsCarousel />
+        <div className="w-full  mt-40 bg-green-400">
+          <CardsCarousel />
+        </div>
+
+        {/* Filter menu section  */}
+        <div className="relative w-full bg-white p-4">
+          {isMobile ? (
+            <div className="relative">
+              <div className="flex justify-between">
+                <p className="text-gray-800 font-bold">All Food Items</p>
+                <div className="flex items-center gap-3">
+                  <Link
+                    href={`/search-restaurant-item/${id}`}
+                    className="border-2 px-2 rounded-md py-1 border-orange-400"
+                  >
+                    <FontAwesomeIcon
+                      icon={faSearch}
+                      className="text-orange-400"
+                    />
+                  </Link>
+                  <FontAwesomeIcon
+                    icon={faFilter}
+                    onClick={filterToggle}
+                    className="border-2 p-2 rounded-md border-orange-400 text-orange-400 text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex justify-between">
+              <p className="text-gray-800 font-bold">All Food Items</p>
+              <div className="flex items-center gap-3">
+                <span className="flex items-center gap-2 border-2 px-2 rounded-full py-1 border-orange-400">
+                  <FontAwesomeIcon
+                    icon={faSearch}
+                    className="text-orange-400"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Search for your food"
+                    className="outline-none"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </span>
+                <FontAwesomeIcon
+                  icon={faFilter}
+                  onClick={filterToggle}
+                  className="border-2 p-2 rounded-md border-orange-400 text-orange-400 text-sm"
+                />
+              </div>
+            </div>
+          )}
+
+          <div className="flex gap-2">
+            <button className="bg-orange-200 px-1 py-0.5 rounded-md">
+              All
+            </button>
+            <button className="bg-orange-200 px-1 py-0.5 rounded-md">
+              Italian
+            </button>
+          </div>
+
+          <div className=" w-full flex flex-wrap gap-4 my-4">
+            {filteredFoodItems.length === 0 ? (
+              <div className="w-full flex items-center justify-center">
+                <div className="w-[150px] h-[150px]">
+                  <Image
+                    src={"/assets/Restaurant/no-items-placeholder.png"}
+                    width={400}
+                    height={300}
+                    alt="Image"
+                    className="w-full h-full"
+                  />
+                </div>
+              </div>
+            ) : (
+              filteredFoodItems.map((item) => (
+                <FoodItemsCard
+                  key={item.id}
+                  menuName={item.name}
+                  restaurant={item.restaurant}
+                  originalPrice={item.originalPrice}
+                  Price={item.price}
+                  Img={item.image}
+                  isVeg={item.isVeg}
+                />
+              ))
+            )}
+          </div>
+
+          {isfilterOpen && (
+            <div className="absolute w-[120px] h-auto bg-white right-8 top-8 rounded-md shadow-md">
+              <div className="my-2">
+                {FilterMenus.map((menu) => (
+                  <div
+                    key={menu.id}
+                    onClick={() => {
+                      setActiveFilter(menu.name);
+                      setIsFilterOpen(false);
+                    }}
+                    className="flex font-bold items-center gap-2 bg-gray-200 p-2 justify-start px-4 hover:text-orange-400 transition-colors duration-300"
+                  >
+                    <input type="radio" />
+                    <p>{menu.name}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-      </div>
+
+      <Footer />
     </div>
   );
 };

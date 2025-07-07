@@ -22,12 +22,16 @@ const page = () => {
         <CardsCarousel />
       </div>
       <DineIn />
+      
+      <div className='md:px-48 my-4'>
+
       <CuisineSlider />
+      </div>
       <RestaurantCardSlider />
       <NewRestaurants />
       <AdBanner />
       <AllRestaurantsList />
-      <Footer />
+     
       <MobileMenuBar />
     </div>
   )

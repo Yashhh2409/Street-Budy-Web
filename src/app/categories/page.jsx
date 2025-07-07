@@ -8,9 +8,11 @@ import useMediaQuery from "@/hooks/useMediaQuery";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import { ShimmerFeaturedGallery, ShimmerSimpleGallery } from "react-shimmer-effects";
 
 const Categories = () => {
   const [foodCardData, setFoodCardData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const isMobile = useMediaQuery("(max-width: 767px)");
 
@@ -19,6 +21,7 @@ const Categories = () => {
       try {
         const res = await fetch(`${API_BASE_URL}/api/restaurants`);
         const data = await res.json();
+        setIsLoading(false);
 
         const updatedData = data.map((item) => ({
           ...item,
@@ -36,16 +39,16 @@ const Categories = () => {
     fetchFoodTypes();
   }, []);
 
-  console.log("Food card data : new hai bro", foodCardData);
-
-  return (
+  return isLoading ? (
+    <h1>Loading...</h1>
+  ) : (
     <div className="w-full flex flex-col gap-2 mt-6">
       {isMobile ? (
         <div className="flex items-center gap-4 px-4 w-full bg-[#F6E9E1]">
-            <Link href={"/"} >
-            <FontAwesomeIcon icon={faChevronLeft}/>
-            </Link>
-            <p className="w-full text-center py-3 font-bold">Categories</p>
+          <Link href={"/"}>
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </Link>
+          <p className="w-full text-center py-3 font-bold">Categories</p>
         </div>
       ) : (
         <p className="text-center bg-[#F6E9E1] py-3 font-bold">Categories</p>

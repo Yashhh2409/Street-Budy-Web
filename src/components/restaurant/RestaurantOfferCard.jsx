@@ -31,6 +31,7 @@ const RestaurantOfferCard = ({
           src={banner_img}
           width={50}
           height={50}
+          alt="img"
           className="w-full h-full object-cover rounded-full"
         />
       </div>
