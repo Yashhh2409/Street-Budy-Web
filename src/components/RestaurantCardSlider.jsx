@@ -1,12 +1,14 @@
+"use client";
+
 import React from "react";
 import RestaurantCard from "./Custom/RestaurantCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
-
-import RestaurantsList from "@/data/RestaurantList";
-
+import { useMyAppContext } from "@/context/MyAppContext";
 
 const RestaurantCardSlider = () => {
+  const { restaurantList } = useMyAppContext();
+
   return (
     <div className="w-full md:px-48 py-5">
       <div className=" p-2 flex flex-col gap-4">
@@ -20,17 +22,17 @@ const RestaurantCardSlider = () => {
           </div>
         </div>
         <div className="flex px-1 space-x-3 md:space-x-4 overflow-x-auto no-scrollbar space-y-6">
-          {RestaurantsList.map((restaurant) => (
+          {restaurantList.map((restaurant) => (
             <RestaurantCard
               key={restaurant.id}
               id={restaurant.id}
-              Img={restaurant.image}
-              Distance={restaurant.distance}
-              Icon={restaurant.icon}
-              Name={restaurant.name}
-              Description={restaurant.description}
+              Img={restaurant.rimg}
+              Distance={restaurant.ukm}
+              Icon={restaurant.cover_img}
+              Name={restaurant.title}
+              Description={restaurant.sdesc}
               Delivery_in={restaurant.delevery_in}
-              Rating={restaurant.rating}
+              Rating={restaurant.rate}
             />
           ))}
         </div>

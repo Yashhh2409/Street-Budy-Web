@@ -1,40 +1,28 @@
+"use client";
 
-import AdBanner from '@/components/AdBanner'
-import AllRestaurantsList from '@/components/AllRestaurantsList'
-import CardsCarousel from '@/components/CardsCarousel'
-import CuisineSlider from '@/components/CuisineSlider'
-import MenuBar from '@/components/Custom/MenuBar'
-import DineIn from '@/components/DineIn'
-import CardComponent from '@/components/FoodTypeCarouel'
-import Footer from '@/components/Footer'
-import MobileMenuBar from '@/components/MobileMenuBar'
-import NewRestaurants from '@/components/NewRestaurants'
-import OfferCarousel from '@/components/OfferCarousel'
-import RestaurantCardSlider from '@/components/RestaurantCardSlider'
-import React from 'react'
+import DesktopHeader from "@/components/DesktopHeader";
+import DesktopPage from "@/components/DesktopPage";
+import MobileHeader from "@/components/MobileHeader";
+import MobilePage from "@/components/MobilePage";
+import useMediaQuery from "@/hooks/useMediaQuery";
+import React from "react";
 
 const page = () => {
+  const isMobile = useMediaQuery("(max-width: 767px)");
+
   return (
-    <div className='h-auto'>
-      <CardComponent />
-      <OfferCarousel /> 
-      <div className='md:px-48'>
-        <CardsCarousel />
-      </div>
-      <DineIn />
-      
-      <div className='md:px-48 my-4'>
+    <>
+      {/* <div className="block md:hidden mb-25">
+        <MobileHeader />
+      </div> */}
 
-      <CuisineSlider />
+      <div className="hidden md:block">
+        <DesktopHeader />
       </div>
-      <RestaurantCardSlider />
-      <NewRestaurants />
-      <AdBanner />
-      <AllRestaurantsList />
-     
-      <MobileMenuBar />
-    </div>
-  )
-}
 
-export default page
+      <div>{isMobile ? <MobilePage /> : <DesktopPage />}</div>
+    </>
+  );
+};
+
+export default page;

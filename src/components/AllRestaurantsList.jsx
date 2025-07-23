@@ -1,23 +1,25 @@
-"use client"
+"use client";
 
 import React, { useState } from "react";
 import RestaurantCard from "./Custom/RestaurantCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 
-import RestaurantsList from "@/data/RestaurantList";
-
+import { useMyAppContext } from "@/context/MyAppContext";
 
 const AllRestaurantsList = () => {
+  const { restaurantList } = useMyAppContext();
 
   const [showAll, setShowAll] = useState(false);
-  const [selectedRestaurant, setSelectedRestaurant] = useState(false);
+  // const [selectedRestaurant, setSelectedRestaurant] = useState(false);
 
-   const visibleRestaurants = showAll ? RestaurantsList : RestaurantsList.slice(0, 8);
+  const visibleRestaurants = showAll
+    ? restaurantList
+    : restaurantList.slice(0, 8);
 
   const toggleButton = () => {
-    setShowAll((prev) => !prev)
-  }
+    setShowAll((prev) => !prev);
+  };
 
   return (
     <div className="w-full md:px-48">
@@ -50,20 +52,23 @@ const AllRestaurantsList = () => {
           </div>
           <div className="w-full flex flex-wrap justify-center gap-x-4 gap-y-4">
             {visibleRestaurants.map((restaurant) => (
-              <RestaurantCard 
+              <RestaurantCard
                 key={restaurant.id}
                 layout="square"
-                Img={restaurant.image}
+                Img={restaurant.rimg}
                 Distance={restaurant.distance}
-                Icon={restaurant.icon}
-                Name={restaurant.name}
-                Description={restaurant.description}
-                Delivery_in={restaurant.delevery_in}
-                Rating={restaurant.rating}
+                Icon={restaurant.cover_img}
+                Name={restaurant.title}
+                Description={restaurant.sdesc}
+                Delivery_in={restaurant.ukm}
+                Rating={restaurant.rate}
               />
             ))}
           </div>
-          <button onClick={toggleButton} className="w-fit self-center px-4 py-2 bg-orange-500 font-bold rounded-md text-white">
+          <button
+            onClick={toggleButton}
+            className="w-fit self-center px-4 py-2 bg-orange-500 font-bold rounded-md text-white"
+          >
             {showAll ? "View Less" : "View More"}
           </button>
         </div>

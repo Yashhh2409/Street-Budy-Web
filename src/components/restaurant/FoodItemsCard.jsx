@@ -10,6 +10,7 @@ const FoodItemsCard = ({
   originalPrice,
   Price,
   Img,
+  Discount,
   isVeg,
 }) => {
   return (
@@ -46,12 +47,25 @@ const FoodItemsCard = ({
         <div>
           <p className="text-sm text-gray-500">{restaurant}</p>
           <span className="flex gap-2 items-center">
-            <p className="text-sm text-gray-500 line-through">
-              {CURRENCY_SYMBOL} {originalPrice}
-            </p>
+            <span>
+              {Discount ? (
+                <p className="text-[10px] self-start text-green-500 font-bold">
+                  ({Discount}%OFF)
+                </p>
+              ) : null}
+              <p className="text-sm text-gray-500 line-through">
+                {CURRENCY_SYMBOL} {originalPrice}
+              </p>
+            </span>
             <p className="text-lg text-orange-400 font-bold">
               {CURRENCY_SYMBOL} {Price}
             </p>
+
+            {/* {
+              Discount ? (<p className="text-[12px] self-start text-green-500 font-bold">
+              ({Discount}%OFF)
+            </p>) : (null)
+            } */}
           </span>
         </div>
       </div>

@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 export default function LayoutClient({ children }) {
   const pathname = usePathname();
 
-  const noHeaderFooterRoutes = ["/search-restaurant-item", "/filters", "/checkout", "/restaurant"];
+  const noHeaderFooterRoutes = [ "/filters", "/checkout",];
 
   const shouldHide = noHeaderFooterRoutes.some((route) =>
     pathname.startsWith(route)

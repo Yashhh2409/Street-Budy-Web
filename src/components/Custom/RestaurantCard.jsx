@@ -51,7 +51,7 @@ const RestaurantCard = ({ layout = "horizontal", id, Img, Distance, Icon, Name, 
           <div className="flex justify-between">
             <div></div>
             <div className={`${isSquare ? "self-center w-full pt-9 px-2" : "self-end w-[175px] p-1"}`}>
-              <p className={`text-md font-bold ${isSquare ? "text-center" : ""} `}>{Name}</p>
+              <p className={`text-md font-bold truncate ${isSquare ? "text-center" : ""} `}>{Name}</p>
               <p className={`text-sm truncate text-gray-500 ${isSquare ? "w-[200px] self-center-safe text-center truncate ml-16 md:ml-4" : ""}`}>
                 {Description}
               </p>

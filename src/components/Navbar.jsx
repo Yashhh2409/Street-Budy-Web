@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import "@/lib/fontawesome";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,19 +8,35 @@ import {
   faBars,
   faBell,
   faCartShopping,
-  faCheckCircle,
   faLock,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import SignupModel from "./Custom/SignupModel";
+import useBodyScrollLock from "./Custom/useBodyScrollLock";
 
 const Navbar = () => {
+  const [isSignupOpen, setSignupOpen] = useState(false);
+
+  const SignupModelFun = () => {
+    setSignupOpen((prev) => !prev);
+  };
+
+  // it locks body scroll when modal is open
+  useBodyScrollLock(isSignupOpen);
+
   return (
     <>
       <div className="w-full bg-white p-5 flex justify-between px-48">
         <div className="flex items-center space-x-4 text-xl">
           <Link href={"/"} className="flex items-center gap-2">
-            <Image src="/assets/sb-logo.png" width={50} height={50} alt="logo" className="w-[30px]" />
+            <Image
+              src="/assets/sb-logo.png"
+              width={50}
+              height={50}
+              alt="logo"
+              className="w-[30px]"
+            />
             <p className="text-[25px] font-bold text-amber-600">StackFood</p>
           </Link>
           <ul>
@@ -47,15 +65,20 @@ const Navbar = () => {
             icon={faMagnifyingGlass}
             className="text-gray-500 text-xl"
           />
-          <FontAwesomeIcon icon={faBell} className="text-gray-500 text-xl"/>
-          <FontAwesomeIcon icon={faCartShopping} className="text-gray-500 text-xl"/>
-          <span className="flex space-x-3">
-            <FontAwesomeIcon icon={faLock} className="text-gray-500 text-xl"/>
-            <p>Sign in</p>
-          </span>
-          <FontAwesomeIcon icon={faBars} className="text-gray-500 text-xl"/>
+          <FontAwesomeIcon icon={faBell} className="text-gray-500 text-xl" />
+          <FontAwesomeIcon
+            icon={faCartShopping}
+            className="text-gray-500 text-xl"
+          />
+          <div className="flex space-x-3 cursor-pointer">
+            <FontAwesomeIcon icon={faLock} className="text-gray-500 text-xl" />
+            <div onClick={SignupModelFun}>Sign in</div>
+          </div>
+          <FontAwesomeIcon icon={faBars} className="text-gray-500 text-xl" />
         </div>{" "}
       </div>
+
+      {isSignupOpen && <SignupModel setIsOpen={setSignupOpen} />}
     </>
   );
 };

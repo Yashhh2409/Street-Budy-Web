@@ -70,30 +70,24 @@ import cuisinesData from "@/data/CuisinesList";
 // ];
 
 const CuisineSlider = () => {
-
- 
   return (
     // <div className="w-full md:px-48 my-4">
-      <div style={{backgroundImage: `url("/assets/Cuisines/cuisine_bg.svg")`}} className="w-full py-4">
-
-      
-        <div className="flex justify-between p-3">
-          <p className="text-md font-bold">Cuisines</p>
-          <div className="w-8 h-8 bg-white border-2 border-orange-500 rounded-full flex items-center justify-center text-orange-500">
-            <FontAwesomeIcon icon={faAngleRight}/>
-          </div>
+    <div
+      style={{ backgroundImage: `url("/assets/Cuisines/cuisine_bg.svg")` }}
+      className="w-full py-4"
+    >
+      <div className="flex justify-between items-center p-3">
+        <p className="text-md font-bold">Cuisines</p>
+        <div className="w-8 h-8 bg-white border-2 border-orange-500 rounded-full flex items-center justify-center text-orange-500">
+          <FontAwesomeIcon icon={faAngleRight} />
         </div>
-        <div className="flex gap-2 flex-wrap items-center justify-start mb-4">
-          {cuisinesData.slice(0, 7).map((cuisine) => (
-            <CuisineCard
-              key={cuisine.id}
-              Img={cuisine.img}
-              Name={cuisine.name}
-            />
-          ))}
       </div>
-
+      <div className="flex gap-2 flex-wrap items-center justify-center mb-4">
+        {cuisinesData.slice(0, 7).map((cuisine) => (
+          <CuisineCard key={cuisine.id} Img={cuisine.img} Name={cuisine.name} />
+        ))}
       </div>
+    </div>
     // </div>
   );
 };

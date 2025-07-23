@@ -19,7 +19,7 @@ const Categories = () => {
   useEffect(() => {
     const fetchFoodTypes = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/restaurants`);
+        const res = await fetch(`${API_BASE_URL}/api/foodtype`);
         const data = await res.json();
         setIsLoading(false);
 

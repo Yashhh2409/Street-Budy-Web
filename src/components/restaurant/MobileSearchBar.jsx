@@ -27,8 +27,8 @@ const FilterMenus = [
   },
 ];
 
-const SearchPage = ({ params }) => {
-  const { id } = React.use(params);
+const MobileSearchBar = ({ id, filteredFoodWithSearch, maincats }) => {
+  //   const { id } = React.use(params);
 
   const [isfilterOpen, setIsFilterOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState("All");
@@ -38,25 +38,25 @@ const SearchPage = ({ params }) => {
     setIsFilterOpen((prev) => !prev);
   };
 
-  const filteredFoodItems = useMemo(() => {
-    let filteredFoodItems = FoodItems;
+  //   const filteredFoodItems = useMemo(() => {
+  //     let filteredFoodItems = FoodItems;
 
-    if (activeFilter === "Veg") {
-      return filteredFoodItems.filter((item) => item.isVeg);
-    } else if (activeFilter === "Non-Veg") {
-      return filteredFoodItems.filter((item) => !item.isVeg);
-    }
+  //     if (activeFilter === "Veg") {
+  //       return filteredFoodItems.filter((item) => item.isVeg);
+  //     } else if (activeFilter === "Non-Veg") {
+  //       return filteredFoodItems.filter((item) => !item.isVeg);
+  //     }
 
-    if (searchQuery.trim() !== "") {
-      filteredFoodItems = FoodItems.filter((item) =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-    return filteredFoodItems;
-  }, [activeFilter, searchQuery]);
+  //     if (searchQuery.trim() !== "") {
+  //       filteredFoodItems = FoodItems.filter((item) =>
+  //         item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  //       );
+  //     }
+  //     return filteredFoodItems;
+  //   }, [activeFilter, searchQuery]);
 
   return (
-    <div className="w-full h-">
+    <div className="w-full">
       <div className="flex items-center py-4 px-4 justify-between border-b-[1px] border-gray-300">
         <Link href={`/restaurant/${id}`}>
           <FontAwesomeIcon icon={faChevronLeft} />
@@ -82,9 +82,12 @@ const SearchPage = ({ params }) => {
 
       <div className="p-2">
         <p className="font-bold">Popular Categories</p>
-        <button className="border-[1px] rounded-md p-1 border-gray-400 mt-2">
-          Italian
-        </button>
+
+        {maincats.map((c) => (
+          <button className="border-[1px] rounded-md p-1 border-gray-400 mt-2">
+            {c.title}
+          </button>
+        ))}
       </div>
 
       {isfilterOpen && (
@@ -108,22 +111,27 @@ const SearchPage = ({ params }) => {
       )}
 
       <div className=" w-full flex flex-wrap gap-4 my-4 px-2">
-        {filteredFoodItems.length === 0 ? (
-          
+        {filteredFoodWithSearch.length === 0 ? (
           <div className="w-screen h-[400px] flex items-center justify-center">
             <div className="w-[150px] h-[150px]">
-            <Image src={"/assets/Restaurant/no-items-placeholder.png"} width={400} height={300} alt="Image" className="w-full h-full"/>
-          </div>
+              <Image
+                src={"/assets/Restaurant/no-items-placeholder.png"}
+                width={400}
+                height={300}
+                alt="Image"
+                className="w-full h-full"
+              />
+            </div>
           </div>
         ) : (
-          filteredFoodItems.map((item) => (
+          filteredFoodWithSearch.map((item) => (
             <FoodItemsCard
               key={item.id}
-              menuName={item.name}
+              menuName={item.title}
               restaurant={item.restaurant}
               originalPrice={item.originalPrice}
               Price={item.price}
-              Img={item.image}
+              Img={item.rimg}
               isVeg={item.isVeg}
             />
           ))
@@ -133,4 +141,4 @@ const SearchPage = ({ params }) => {
   );
 };
 
-export default SearchPage;
+export default MobileSearchBar;

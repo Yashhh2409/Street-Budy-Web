@@ -1,12 +1,13 @@
 import { faHeart, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { CURRENCY_SYMBOL } from "@/utils/constant";
 
-const RestaurantsListCard = ({Icon, Name, Rating, Start_from}) => {
+const RestaurantsListCard = ({id, Icon, Name, Rating, Start_from}) => {
   return (
-    <div className="w-[350px] h-[130px] rounded-md bg-white shadow-sm flex gap-2 p-2 hover:bg-orange-50 transition-colors duration-300">
+    <Link href={`/restaurant/${id}`} className="w-[350px] h-[130px] rounded-md bg-white shadow-sm flex gap-2 p-2 hover:bg-orange-50 transition-colors duration-300">
       <div className="w-[150px] flex items-center justify-center rounded-md overflow-hidden">
         <Image
           src={Icon}
@@ -17,7 +18,7 @@ const RestaurantsListCard = ({Icon, Name, Rating, Start_from}) => {
         />
       </div>
       <div className="relative w-[250px] flex flex-col items-start justify-center px-4">
-        <p className="text-gray-800 font-semibold">{Name}</p>
+        <p className="w-[150px] text-gray-800 font-semibold truncate">{Name}</p>
         <span className="flex gap-1 items-center">
           <FontAwesomeIcon icon={faStar} className="text-sm text-[#F6931E]" />
           <p className="font-bold">{Rating}</p>
@@ -52,7 +53,7 @@ const RestaurantsListCard = ({Icon, Name, Rating, Start_from}) => {
         </div>
 
       </div>
-    </div>
+    </Link>
   );
 };
 

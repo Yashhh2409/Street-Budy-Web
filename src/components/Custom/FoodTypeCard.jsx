@@ -1,9 +1,12 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
-const FoodTypeCard = ({ img, title }) => {
+const FoodTypeCard = ({id, img, title }) => {
+
+
   return (
-    <div className="w-auto sm:p-2 md:p-2 flex flex-col gap-2 md:gap-4 items-center hover:bg-gray-300/25 rounded-md group">
+    <Link href={`/category-product/${id}`} className="w-auto sm:p-2 md:p-2 flex flex-col gap-2 md:gap-4 items-center hover:bg-gray-300/25 rounded-md group">
       <div className="w-16 h-16 md:w-24 md:h-24 rounded-md overflow-hidden">
         <Image
           src={img}
@@ -13,8 +16,10 @@ const FoodTypeCard = ({ img, title }) => {
           className="w-full h-full rounded-md border-2 border-gray-300 transition-transform duration-500 group-hover:scale-125 object-cover"
         />
       </div>
-      <p className="text-center text-[12px] md:text-[15px] capitalize">{title}</p>
-    </div>
+      <p className="w-16 md:w-24 text-center text-nowrap truncate text-[12px] md:text-[15px] capitalize">
+        {title}
+      </p>
+    </Link>
   );
 };
 

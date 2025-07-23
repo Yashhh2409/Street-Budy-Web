@@ -7,6 +7,7 @@ import { Navigation, Autoplay } from "swiper/modules";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
+import { useEffect } from "react";
 
 const banners = [
   { id: "1", img: "/assets/OfferBanners/offerBanner1.png" },
@@ -15,6 +16,10 @@ const banners = [
   { id: "4", img: "/assets/OfferBanners/offerBanner4.png" },
   { id: "5", img: "/assets/OfferBanners/offerBanner5.png" },
 ];
+
+// useEffect(() => {
+//   const bannerList = fetch()
+// }, [])
 
 const OfferCarousel = () => {
   return (
