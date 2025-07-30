@@ -1,26 +1,25 @@
 "use client";
 
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
 
-import { IMAGE_BASE_URL } from "@/utils/constant";
-
+import React, { useContext, useEffect, useState } from "react";
 import RestaurantsListCard from "@/components/restaurant/RestaurantsListCard";
+import { MyAppContext } from "@/context/MyAppContext";
 
-import { API_BASE_URL } from "@/utils/constant";
 
 const Restaurants = () => {
   const [restaurantList, setRestaurantList] = useState([]);
 
+  const {Currency} = useContext(MyAppContext);
+
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/restaurants`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/restaurants`);
         const data = await response.json();
 
         const updatedData = data.map((item) => ({
           ...item,
-          cover_img: `${IMAGE_BASE_URL}${
+          cover_img: `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${
             item.cover_img.startsWith("/") ? "" : "/"
           }${item.cover_img}`,
         }));

@@ -63,6 +63,8 @@ const DeliveryManTips = [
 const page = () => {
   const isMobile = useMediaQuery("(max-width: 767px)");
 
+  const { showBar } = useContext(MyAppContext);
+
   const [selectedDelivery, setSelectedDelivery] = useState("Home Delivery");
   const [selectedDelTips, setSelectedDelTips] = useState("Not Now");
   const [isSummaryOpen, setSummaryOpen] = useState(true);
@@ -75,6 +77,10 @@ const page = () => {
 
   return (
     <>
+      <div className={`block md:hidden ${showBar ? "pb-8" : "pb-0"} `}>
+        <AppDownloadBar />
+      </div>
+
       <div className="hidden md:block">
         <DesktopHeader />
       </div>
@@ -84,18 +90,31 @@ const page = () => {
       </div>
 
       <div className="w-full flex flex-col gap-2 mt-6">
-        {isMobile ? (
-          <div className="flex items-center gap-4 px-4 w-full bg-[#F6E9E1]">
+        <div className="block md:hidden">
+          <div
+            className={`fixed ${
+              showBar ? "top-13" : "top-0"
+            } overflow-hidden flex items-center justify-center gap-4 px-4 w-full h-[50px] bg-white z-50`}
+          >
             <Link href={"/"}>
-              <FontAwesomeIcon icon={faChevronLeft} />
+              <FontAwesomeIcon icon={faChevronLeft} className="w-8 h-8" />
             </Link>
-            <p className="w-full text-center py-3 font-bold">Checkout</p>
+            <p className="w-full mr-8 text-center py-3 font-bold">Checkout</p>
           </div>
-        ) : (
-          <p className="text-center bg-[#F6E9E1] py-3 font-bold">Checkout</p>
-        )}
-        <div className="w-full h-full md:px-48 flex items-start justify-between gap-1">
-          <div className="w-3/5 p-1 flex flex-col gap-2">
+        </div>
+
+        <div className="hidden md:block">
+          <p className="text-center bg-white py-3 font-bold">Checkout</p>
+        </div>
+
+        <div
+          className={` ${
+            showBar
+              ? "mt-12 md:mt-0 mb-32 md:mb-10"
+              : "mt-6 md:mt-0 mb-32 md:mb-0"
+          }  w-full px-4 py-1 md:px-48 flex flex-col md:flex-row items-start justify-between gap-1`}
+        >
+          <div className="w-full md:w-3/5 p-1 flex flex-col gap-2">
             <div className="bg-white w-full py-4 rounded-lg flex items-center justify-between px-4">
               <div>
                 <p className="font-bold">Wants to Unlock More Features?</p>
@@ -157,11 +176,11 @@ const page = () => {
                       </div>
 
                       <Link href={"/edit-address"}>
-                      <FontAwesomeIcon
-                        icon={faEdit}
-                        className="text-orange-500 cursor-pointer"
+                        <FontAwesomeIcon
+                          icon={faEdit}
+                          className="text-orange-500 cursor-pointer"
                         />
-                        </Link>
+                      </Link>
                     </div>
 
                     <hr className="text-gray-300" />
@@ -172,7 +191,7 @@ const page = () => {
                   </div>
                 </div>
 
-                <div className="bg-white w-full h-[110px] py-3 rounded-lg px-4">
+                <div className="bg-white w-full md:h-[130px] py-3 rounded-lg px-4">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <p className="font-bold ">Delivery Man Tips</p>
@@ -194,7 +213,7 @@ const page = () => {
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex py-4 items-center gap-2 overflow-x-scroll md:overflow-x-hidden overflow-y-hidden">
                     {selectedDelTips === "Custom" ? (
                       <div className="w-full flex items-center gap-2">
                         <input
@@ -222,7 +241,7 @@ const page = () => {
                                 selectedDelTips === tip.charges
                                   ? "bg-orange-500 text-white"
                                   : ""
-                              } px-3 py-1 border-[2px] border-gray-300 rounded-md cursor-pointer`}
+                              } px-3 py-1 text-nowrap border-[2px] border-gray-300 rounded-md cursor-pointer`}
                             >
                               {isFinite(Number(tip.charges))
                                 ? `${Currency} ${tip.charges}`
@@ -322,15 +341,17 @@ const page = () => {
             </div>
           </div>
 
-          <div className="w-2/5">
+          <div className="w-full md:w-2/5">
             <div className="bg-white rounded-lg p-4">
-              <span className="flex items-center justify-between py-3">
+              <span
+                onClick={handleOrderSummary}
+                className="flex items-center justify-between py-3 cursor-pointer"
+              >
                 <p className="font-bold">Order Summary</p>
 
                 {isSummaryOpen ? (
                   <FontAwesomeIcon
                     icon={faCircleChevronDown}
-                    onClick={handleOrderSummary}
                     className="text-lg"
                   />
                 ) : (
@@ -381,22 +402,35 @@ const page = () => {
                 </Link>
               </div>
 
-              <span className="flex items-center justify-between text-lg text-orange-500 py-3 font-bold">
-                <p>Total Amount</p>
-                <p>{Currency} 1198.00</p>
-              </span>
+              {/* desktop  */}
+              <div className="hidden md:block">
+                <span className="flex items-center justify-between text-lg text-orange-500 py-3 font-bold">
+                  <p>Total Amount</p>
+                  <p>{Currency} 1198.00</p>
+                </span>
 
-              <button className="w-full bg-orange-500 rounded-md text-white tracking-wider py-1.5 font-bold cursor-pointer">
-                Place Order
-              </button>
+                <button className="w-full bg-orange-500 rounded-md text-white tracking-wider py-1.5 font-bold cursor-pointer">
+                  Place Order
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-<div className="hidden md:block">
+        {/* mobile  */}
+        <div className="w-full py-4 bg-white block md:hidden fixed bottom-0 px-4">
+          <span className="flex items-center justify-between text-lg text-orange-500 py-3 font-bold">
+            <p>Total Amount</p>
+            <p>{Currency} 1198.00</p>
+          </span>
 
-      <Footer />
-</div>
+          <button className="w-full bg-orange-500 rounded-md text-white tracking-wider py-1.5 font-bold cursor-pointer">
+            Place Order
+          </button>
+        </div>
+      </div>
+      <div className="hidden md:block">
+        <Footer />
+      </div>
     </>
   );
 };

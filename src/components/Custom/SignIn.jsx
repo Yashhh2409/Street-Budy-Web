@@ -54,6 +54,8 @@ const SignIn = ({ PasswordToggle, isPassVisible, PageToggle }) => {
 
       if (response.ok) {
         console.log("Login success:", data);
+         document.cookie = `token=${data.token}; path=/; max-age=${7 * 24 * 60 * 60}; secure`;
+         window.location.href = "/";
       } else {
         console.log("Login failed:", data);
       }

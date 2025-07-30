@@ -1,11 +1,17 @@
+"use client"
+
+import { MyAppContext } from "@/context/MyAppContext";
 import { faHeart, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
-import { CURRENCY_SYMBOL } from "@/utils/constant";
+import React, { useContext } from "react";
 
 const RestaurantsListCard = ({id, Icon, Name, Rating, Start_from}) => {
+
+
+  const {Currency} = useContext(MyAppContext);
+
   return (
     <Link href={`/restaurant/${id}`} className="w-[350px] h-[130px] rounded-md bg-white shadow-sm flex gap-2 p-2 hover:bg-orange-50 transition-colors duration-300">
       <div className="w-[150px] flex items-center justify-center rounded-md overflow-hidden">
@@ -26,7 +32,7 @@ const RestaurantsListCard = ({id, Icon, Name, Rating, Start_from}) => {
         </span>
         <span className="flex items-center gap-2">
           <p className="text-gray-500 text-sm">Start From</p>
-          <p className="font-bold">{CURRENCY_SYMBOL} {Start_from}</p>
+          <p className="font-bold">{Currency} {Start_from}</p>
         </span>
 
         <div className="relative flex items-center">

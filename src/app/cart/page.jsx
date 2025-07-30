@@ -1,0 +1,236 @@
+"use client";
+
+import React, { useContext, useState } from "react";
+
+import useMediaQuery from "@/hooks/useMediaQuery";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronLeft,
+  faCircleChevronDown,
+  faCircleChevronUp,
+  faEdit,
+  faInfo,
+  faWallet,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
+import DesktopHeader from "@/components/DesktopHeader";
+import AppDownloadBar from "@/components/Custom/AppDownloadBar";
+import Image from "next/image";
+import { MyAppContext } from "@/context/MyAppContext";
+import Footer from "@/components/Footer";
+
+const DeliveryOptions = [
+  {
+    id: "1",
+    name: "Home Delivery",
+    Charge: "10",
+  },
+  {
+    id: "2",
+    name: "Take Away",
+    Charge: "Free",
+  },
+];
+
+const DeliveryManTips = [
+  {
+    id: "1",
+    charges: "Not Now",
+  },
+  {
+    id: "2",
+    charges: "15",
+  },
+  {
+    id: "3",
+    charges: "10",
+  },
+  {
+    id: "4",
+    charges: "20",
+  },
+  {
+    id: "5",
+    charges: "40",
+  },
+  {
+    id: "6",
+    charges: "Custom",
+  },
+];
+
+const page = () => {
+  const isMobile = useMediaQuery("(max-width: 767px)");
+
+  const { showBar } = useContext(MyAppContext);
+
+  const [selectedDelivery, setSelectedDelivery] = useState("Home Delivery");
+  const [selectedDelTips, setSelectedDelTips] = useState("Not Now");
+  const [isSummaryOpen, setSummaryOpen] = useState(true);
+
+  const { Currency } = useContext(MyAppContext);
+
+  const handleOrderSummary = () => {
+    setSummaryOpen((prev) => !prev);
+  };
+
+  return (
+    <>
+      <div className={`block md:hidden ${showBar ? "pb-8" : "pb-0"} `}>
+        <AppDownloadBar />
+      </div>
+
+      <div className="hidden md:block">
+        <DesktopHeader />
+      </div>
+
+      <div className={`block md:hidden`}>
+        <AppDownloadBar />
+      </div>
+
+      <div className="w-full flex flex-col gap-2 mt-6">
+        <div className="block md:hidden">
+          <div
+            className={`fixed ${
+              showBar ? "top-13" : "top-0"
+            } overflow-hidden flex items-center justify-center gap-4 px-4 w-full h-[50px] bg-white z-50`}
+          >
+            <Link href={"/"}>
+              <FontAwesomeIcon icon={faChevronLeft} className="w-8 h-8" />
+            </Link>
+            <p className="w-full mr-8 text-center py-3 font-bold">Cart</p>
+          </div>
+        </div>
+
+        <div className="hidden md:block">
+          <p className="text-center bg-white py-3 font-bold">Cart</p>
+        </div>
+
+        <div
+          className={` ${
+            showBar
+              ? "mt-12 md:mt-0 mb-32 md:mb-10"
+              : "mt-6 md:mt-0 mb-32 md:mb-0"
+          }  w-full px-4 py-1 md:px-48 flex flex-col md:flex-row items-start justify-between gap-1`}
+        >
+          <div className="w-full md:w-3/5 p-1 flex flex-col gap-2">
+            <div className="bg-white w-full py-4 rounded-lg flex items-center justify-between px-4">
+              <div className="flex items-center gap-4">
+                <div className="w-[70px] h-[70px] rounded-md overflow-hidden">
+                  <Image
+                    src={"/assets/images/img-2.png"}
+                    width={35}
+                    height={35}
+                    className="w-full h-full object-cover rounded-md"
+                  />
+                </div>
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-bold">Grilled Eggplant Kebab</p>
+                  <div className="flex items-center space-x-2">
+                    <p className="text-sm font-bold"> {Currency} 42.76</p>
+                    <p className="text-gray-400 line-through">{Currency} 46</p>
+                  </div>
+                </div>
+              </div>
+              <div className="border-2 w-5 h-5 rounded-full flex items-center justify-center">
+                <FontAwesomeIcon icon={faInfo} className="text-xs" />
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full md:w-2/5">
+            <div className="bg-white rounded-lg p-4">
+              <span
+                onClick={handleOrderSummary}
+                className="flex items-center justify-between py-3 cursor-pointer"
+              >
+                <p className="font-bold">Order Summary</p>
+
+                {isSummaryOpen ? (
+                  <FontAwesomeIcon
+                    icon={faCircleChevronDown}
+                    className="text-lg"
+                  />
+                ) : (
+                  <FontAwesomeIcon
+                    icon={faCircleChevronUp}
+                    onClick={handleOrderSummary}
+                    className="text-lg"
+                  />
+                )}
+              </span>
+              <hr />
+
+              {isSummaryOpen && (
+                <div>
+                  <span className="py-2 flex items-center justify-between">
+                    <p>Subtotal</p>
+                    <p>{Currency} 1200</p>
+                  </span>
+                  <span className="py-2 flex items-center justify-between">
+                    <p>Subtotal</p>
+                    <p>{Currency} 1200</p>
+                  </span>
+                  <span className="py-2 flex items-center justify-between">
+                    <p>Subtotal</p>
+                    <p>{Currency} 1200</p>
+                  </span>
+                  <span className="py-2 flex items-center justify-between">
+                    <p>Subtotal</p>
+                    <p>{Currency} 1200</p>
+                  </span>
+                </div>
+              )}
+
+              <hr />
+
+              <div className="text-sm font-bold text-gray-600 mt-4">
+                I have read and agreed with{" "}
+                <Link href="" className="text-orange-500">
+                  Privacy Policy
+                </Link>
+                ,{" "}
+                <Link href="" className="text-orange-500">
+                  Terms and Conditions
+                </Link>{" "}
+                and{" "}
+                <Link href="" className="text-orange-500">
+                  Refund Policy
+                </Link>
+              </div>
+
+              {/* desktop  */}
+              <div className="hidden md:block">
+                <span className="flex items-center justify-between text-lg text-orange-500 py-3 font-bold">
+                  <p>Total Amount</p>
+                  <p>{Currency} 1198.00</p>
+                </span>
+
+                <button className="w-full bg-orange-500 rounded-md text-white tracking-wider py-1.5 font-bold cursor-pointer">
+                  Confirm Delivery Details
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* mobile  */}
+        <div className="w-full py-4 bg-white block md:hidden fixed bottom-0 px-4">
+          <span className="flex items-center justify-between text-lg text-orange-500 py-3 font-bold">
+            <p>Total Amount</p>
+            <p>{Currency} 1198.00</p>
+          </span>
+
+          <button className="w-full bg-orange-500 rounded-md text-white tracking-wider py-1.5 font-bold cursor-pointer">
+            Confirm Delivery Details
+          </button>
+        </div>
+      </div>
+      <div className="hidden md:block">
+        <Footer />
+      </div>
+    </>
+  );
+};
+
+export default page;
