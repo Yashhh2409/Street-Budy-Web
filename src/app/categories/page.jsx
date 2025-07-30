@@ -3,12 +3,10 @@
 import CategoriesCard from "@/components/categories/CategoriesCard";
 import React, { useEffect, useState } from "react";
 
-import { API_BASE_URL, IMAGE_BASE_URL } from "@/utils/constant";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
-import { ShimmerFeaturedGallery, ShimmerSimpleGallery } from "react-shimmer-effects";
 
 const Categories = () => {
   const [foodCardData, setFoodCardData] = useState([]);
@@ -19,13 +17,13 @@ const Categories = () => {
   useEffect(() => {
     const fetchFoodTypes = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/foodtype`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/foodtype`);
         const data = await res.json();
         setIsLoading(false);
 
         const updatedData = data.map((item) => ({
           ...item,
-          img: `${IMAGE_BASE_URL}${item.img.startsWith("/") ? "" : "/"}${
+          img: `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${item.img.startsWith("/") ? "" : "/"}${
             item.img
           }`,
         }));

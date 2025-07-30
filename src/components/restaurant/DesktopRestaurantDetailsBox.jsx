@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Image from "next/image";
 import RestaurantOfferCarousel from "./RestaurantOfferCarousel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,7 +10,7 @@ import {
   faShareNodes,
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
-import { CURRENCY_SYMBOL } from "@/utils/constant";
+import { MyAppContext } from "@/context/MyAppContext";
 
 const DesktopRestaurantDetailsBox = ({
   RestaurantIcon,
@@ -21,6 +21,9 @@ const DesktopRestaurantDetailsBox = ({
   Landmark,
   RestaurantRating,
 }) => {
+
+  const {Currency} = useContext(MyAppContext);
+
   return (
     <div className="absolute w-[90%] md:w-[97%] md:h-[240px] shadow-md bg-white -bottom-36 rounded-md overflow-hidden">
       <div className="w-full bg-green-700 text-white font-bold rounded-t-md p-2 flex items-center justify-end gap-3">
@@ -55,7 +58,7 @@ const DesktopRestaurantDetailsBox = ({
               <p className="text-gray-800 font-bold">{RestaurantName}</p>
               <p className="text-gray-500 line-clamp-2">{RestaurantAddress}</p>
               <p className="text-gray-500">
-                Start from: {CURRENCY_SYMBOL} {Restaurant_Start_From}
+                Start from: {Currency} {Restaurant_Start_From}
               </p>
             </div>
 

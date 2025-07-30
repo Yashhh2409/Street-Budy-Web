@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { CURRENCY_SYMBOL } from "@/utils/constant";
+import { MyAppContext } from "@/context/MyAppContext";
 
 const RestaurantOfferCard = ({
   offer,
@@ -11,6 +11,10 @@ const RestaurantOfferCard = ({
   min_purchase,
   banner_img,
 }) => {
+
+
+  const {Currency} = useContext(MyAppContext);
+
   return (
     <div className="w-full h-[100px] bg-[#FFF1E7] rounded-md flex justify-between p-2">
       <div>
@@ -22,7 +26,7 @@ const RestaurantOfferCard = ({
           {start_date} to {end_date}
         </p>
         <p className="text-gray-500 text-sm">
-          Min Purchase {CURRENCY_SYMBOL}
+          Min Purchase {Currency}
           {min_purchase}
         </p>
       </div>

@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faPlus, faRoute } from "@fortawesome/free-solid-svg-icons";
-import { CURRENCY_SYMBOL } from "@/utils/constant";
+import { MyAppContext } from "@/context/MyAppContext";
 
 const FoodItemsCard = ({
   menuName,
@@ -13,6 +13,8 @@ const FoodItemsCard = ({
   Discount,
   isVeg,
 }) => {
+  const { Currency } = useContext(MyAppContext);
+
   return (
     <div className="w-full md:w-[350px] bg-white p-2 rounded-lg flex justify-between gap-2 hover:bg-orange-50 transition-colors duration-300">
       <div className="w-[150px] md:w-2/5 h-[100px] rounded-lg overflow-hidden">
@@ -54,11 +56,11 @@ const FoodItemsCard = ({
                 </p>
               ) : null}
               <p className="text-sm text-gray-500 line-through">
-                {CURRENCY_SYMBOL} {originalPrice}
+                {Currency} {originalPrice}
               </p>
             </span>
             <p className="text-lg text-orange-400 font-bold">
-              {CURRENCY_SYMBOL} {Price}
+              {Currency} {Price}
             </p>
 
             {/* {

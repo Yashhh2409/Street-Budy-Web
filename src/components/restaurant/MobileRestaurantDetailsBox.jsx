@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Image from "next/image";
 import RestaurantOfferCarousel from "./RestaurantOfferCarousel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,6 +11,7 @@ import {
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import { CURRENCY_SYMBOL } from "@/utils/constant";
+import { MyAppContext } from "@/context/MyAppContext";
 
 const MobileRestaurantDetailsBox = ({
   RestaurantIcon,
@@ -21,6 +22,10 @@ const MobileRestaurantDetailsBox = ({
   Landmark,
   RestaurantRating,
 }) => {
+
+
+  const {Currency} = useContext(MyAppContext);
+
   return (
     <div className="absolute w-[90%] md:w-[97%] h-auto bg-white -bottom-40 pt-2 rounded-md overflow-hidden shadow-md">
       <div className="w-full md:w-[77%] place-self-end flex flex-col md:flex-row gap-2 p-2">
@@ -40,7 +45,7 @@ const MobileRestaurantDetailsBox = ({
               <p className="text-gray-800 font-bold">{RestaurantName}</p>
               <p className="text-gray-500 line-clamp-2 text-sm">{RestaurantAddress}</p>
               <p className="text-gray-500 text-sm">
-                Start from: {CURRENCY_SYMBOL} {Restaurant_Start_From}
+                Start from: {Currency} {Restaurant_Start_From}
               </p>
             </div>
 

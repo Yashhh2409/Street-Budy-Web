@@ -1,7 +1,8 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { IMAGE_BASE_URL, API_BASE_URL } from "@/utils/constant";
+
+import CountryList from "country-list-with-dial-code-and-flag";
 
 export const MyAppContext = createContext();
 
@@ -10,22 +11,54 @@ export const MyAppProvider = ({ children }) => {
   const [mcatList, setmcatList] = useState([]);
   const [productList, setProductList] = useState([]);
   const [productAttributes, setProductAttributes] = useState([]);
+  const [showBar, setShowBar] = useState(true);
+  const [countries, setCountry] = useState([]);
 
   const Currency = "₹";
+
+  // useEffect(() => {
+  //   const countriesData = emojiFlags.data.map((country) => ({
+  //     name: country.name,
+  //     code: country.code,
+  //     dialCode: country.dial_code,
+  //     image: `https://flagcdn.com/w40/${country.code.toLowerCase()}.png`
+  //   }));
+
+  //   setCountry(countriesData);
+  // }, []);
+
+  useEffect(() => {
+    const countriesData = CountryList.getAll()
+
+    const filteredCountries = countriesData.map((c) => ({
+      name: c.name,
+      dialCode: c.dial_code,
+      image: `https://flagcdn.com/w40/${c.code.toLowerCase()}.png`
+    }))
+
+    setCountry(filteredCountries);
+
+  }, []);
+
+
 
   const formatImagePaths = (data) => {
     return data.map((item) => ({
       ...item,
       cover_img: item.cover_img
-        ? `${IMAGE_BASE_URL}${item.cover_img.startsWith("/") ? "" : "/"}${
-            item.cover_img
-          }`
+        ? `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${
+            item.cover_img.startsWith("/") ? "" : "/"
+          }${item.cover_img}`
         : null,
       rimg: item.rimg
-        ? `${IMAGE_BASE_URL}${item.rimg.startsWith("/") ? "" : "/"}${item.rimg}`
+        ? `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${
+            item.rimg.startsWith("/") ? "" : "/"
+          }${item.rimg}`
         : null,
       img: item.img
-        ? `${IMAGE_BASE_URL}${item.img.startsWith("/") ? "" : "/"}${item.img}`
+        ? `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${
+            item.img.startsWith("/") ? "" : "/"
+          }${item.img}`
         : null,
     }));
   };
@@ -34,7 +67,9 @@ export const MyAppProvider = ({ children }) => {
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/restaurants`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/restaurants`
+        );
         const data = await response.json();
 
         const updatedData = formatImagePaths(data);
@@ -52,7 +87,9 @@ export const MyAppProvider = ({ children }) => {
   useEffect(() => {
     const fetchMainCategories = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/mcat`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/mcat`
+        );
         const data = await response.json();
 
         setmcatList(data);
@@ -68,7 +105,9 @@ export const MyAppProvider = ({ children }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/products`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products`
+        );
 
         const data = await response.json();
 
@@ -87,7 +126,9 @@ export const MyAppProvider = ({ children }) => {
   useEffect(() => {
     const fetchAttributes = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/product-attribute`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/product-attribute`
+        );
         const data = await response.json();
         setProductAttributes(data);
       } catch (error) {
@@ -104,6 +145,9 @@ export const MyAppProvider = ({ children }) => {
     mcatList,
     productList,
     productAttributes,
+    showBar,
+    setShowBar,
+    countries,
   };
 
   return (

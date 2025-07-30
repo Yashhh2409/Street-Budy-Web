@@ -13,6 +13,7 @@ import "swiper/css/scrollbar";
 // import required modules
 import { Scrollbar } from "swiper/modules";
 import Modal from "./Custom/Modal";
+import useBodyScrollLock from "./Custom/useBodyScrollLock";
 
 const cardData = [
   {
@@ -152,6 +153,8 @@ const cardData = [
 const CardsCarousel = () => {
   const [showModal, SetShowModal] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
+
+  useBodyScrollLock(showModal);
 
   return (
     <>

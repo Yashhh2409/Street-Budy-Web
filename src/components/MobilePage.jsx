@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import MobileHeader from "./MobileHeader";
 import MobileMenuBar from "./Custom/MobileMenuBar";
 import CardComponent from "./FoodTypeCarouel";
@@ -14,20 +14,27 @@ import useMediaQuery from "@/hooks/useMediaQuery";
 import PopupNotification from "./Custom/PopupNotification";
 import GuestUser from "./MobileComps/GuestUser";
 import AppDownloadBar from "./Custom/AppDownloadBar";
+import { MyAppContext } from "@/context/MyAppContext";
 
 const MobilePage = () => {
   const [screen, setScreen] = useState("home");
 
-  const isMobile = useMediaQuery("(max-width: 767px)");
+    const {showBar} = useContext(MyAppContext);
+  
+
+  // const isMobile = useMediaQuery("(max-width: 767px)");
 
   return (
     <div className="">
       {screen === "home" && (
         <>
-          <div className="block md:hidden pb-38">
+
+          <div className={`block md:hidden ${showBar ? "pb-38" : "pb-24"} `}>
             <AppDownloadBar />
             <MobileHeader />
           </div>
+
+
           <div className="pb-20">
             <CardComponent />
             <OfferCarousel />

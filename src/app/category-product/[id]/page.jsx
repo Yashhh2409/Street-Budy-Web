@@ -1,10 +1,13 @@
 "use client";
 
+import AppDownloadBar from "@/components/Custom/AppDownloadBar";
+import MobileMenuBar from "@/components/Custom/MobileMenuBar";
 import DesktopHeader from "@/components/DesktopHeader";
 import MobileHeader from "@/components/MobileHeader";
 import FoodItemsCard from "@/components/restaurant/FoodItemsCard";
+import { MyAppContext } from "@/context/MyAppContext";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 const tabs = [
   {
@@ -20,6 +23,8 @@ const tabs = [
 const CategoryProduct = () => {
   const { id } = useParams();
 
+  const {showBar} = useContext(MyAppContext);
+
   const [selectedTabs, setSelectedTabs] = useState("Food");
 
   return (
@@ -28,10 +33,10 @@ const CategoryProduct = () => {
         <DesktopHeader />
       </div>
 
-      <div className="block md:hidden">
-        <MobileHeader />
+      <div className={`block md:hidden`}>
+        <AppDownloadBar />
       </div>
-      <div className="md:mx-48 bg-red-200">
+      <div className={`md:mx-48 bg-red-200 ${showBar ? "mt-12" : ""}`}>
         <div className="flex gap-4 p-4 font-semibold">
           {tabs.map((t) => (
             <div key={t.id}>
@@ -60,6 +65,8 @@ const CategoryProduct = () => {
           <FoodItemsCard />
         </div>
       </div>
+
+   
     </>
   );
 };

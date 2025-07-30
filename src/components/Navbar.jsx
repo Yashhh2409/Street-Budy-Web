@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "@/lib/fontawesome";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,8 +14,13 @@ import {
 import Link from "next/link";
 import SignupModel from "./Custom/SignupModel";
 import useBodyScrollLock from "./Custom/useBodyScrollLock";
+import { AuthContext } from "@/context/AuthContext";
 
 const Navbar = () => {
+  const { user } = useContext(AuthContext);
+
+  console.log("User:", user);
+
   const [isSignupOpen, setSignupOpen] = useState(false);
 
   const SignupModelFun = () => {
@@ -39,6 +44,7 @@ const Navbar = () => {
             />
             <p className="text-[25px] font-bold text-amber-600">StackFood</p>
           </Link>
+
           <ul>
             <li>
               <a href="/">Home</a>
@@ -60,6 +66,17 @@ const Navbar = () => {
             </li>
           </ul>
         </div>
+
+
+        {user ? (
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-700">{user.email}</span>
+          </div>
+        ) : (
+          <div onClick={SignupModelFun}>Sign In</div>
+        )}
+
+        
         <div className="flex items-center gap-x-8">
           <FontAwesomeIcon
             icon={faMagnifyingGlass}

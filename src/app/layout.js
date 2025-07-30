@@ -3,6 +3,7 @@ import "./globals.css";
 import LayoutClient from "@/components/LayoutClient";
 import { MyAppProvider } from "@/context/MyAppContext";
 import Preloader from "@/components/Custom/Preloader";
+import { AuthProvider } from "@/context/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,8 +31,10 @@ export default function RootLayout({ children }) {
           {/* <Preloader /> */}
           <MyAppProvider>
             {/* <LayoutClient> */}
+            <AuthProvider>
 
-            {children}
+           {children}
+            </AuthProvider>
             {/* </LayoutClient> */}
           </MyAppProvider>
           {/* <Footer /> */}

@@ -16,11 +16,17 @@ const page = () => {
         <MobileHeader />
       </div> */}
 
-      <div className="hidden md:block">
-        <DesktopHeader />
+  <div className="hidden md:block">
+    <DesktopHeader />
+  </div>
+
+      <div className="block md:hidden">
+        <MobilePage />
       </div>
 
-      <div>{isMobile ? <MobilePage /> : <DesktopPage />}</div>
+      <div className="hidden md:block">
+        <DesktopPage />
+      </div>
     </>
   );
 };

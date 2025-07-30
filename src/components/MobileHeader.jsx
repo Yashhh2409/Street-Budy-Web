@@ -1,5 +1,6 @@
 "use client";
 
+import { MyAppContext } from "@/context/MyAppContext";
 import {
   faBell,
   faCaretDown,
@@ -9,15 +10,21 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import SignupModel from "./Custom/SignupModel";
 
 const MobileHeader = () => {
-  const [show, setShow] = useState(false);
+  const { showBar, setShowBar } = useContext(MyAppContext);
+   const [isSignupOpen, setSignupOpen] = useState(false);
+  
+    const SignupModelFun = () => {
+      setSignupOpen((prev) => !prev);
+    };
 
   return (
     <>
-      <div className="fixed w-full z-40 mt-12">
-        <div className="relative w-full bg-[#FF7A33] flex justify-between items-center px-2 py-5 text-white pb-8">
+      <div className={`fixed w-full z-40 ${showBar ? "mt-12" : ""}`}>
+        <div className="relative w-full bg-[#FF7A33] flex justify-between items-center p-4 text-white pb-8">
           <div>
             <span className="flex space-x-2 items-center">
               <FontAwesomeIcon icon={faLocationDot} />
@@ -27,12 +34,14 @@ const MobileHeader = () => {
               Q972+VPF,Dhaka,India <FontAwesomeIcon icon={faCaretDown} />
             </p>
           </div>
-          <div
-            onMouseEnter={() => setShow(true)}
-            onMouseLeave={() => setShow(false)}
-            className="bg-white text-black w-8 h-8 p-2 rounded-md flex items-center justify-center hover:text-amber-400"
-          >
-            <FontAwesomeIcon icon={faUser} />
+
+          <div className="flex items-center gap-2">
+            <div className="bg-white text-black w-8 h-8 p-2 rounded-md flex items-center justify-center hover:text-amber-400">
+              <FontAwesomeIcon icon={faBell} />
+            </div>
+            <div onClick={SignupModelFun} className="bg-white text-black w-8 h-8 p-2 rounded-md flex items-center justify-center hover:text-amber-400">
+              <FontAwesomeIcon icon={faUser} />
+            </div>
           </div>
 
           <div className="absolute w-[90%] text-orange-400 bg-white p-2 rounded-full -bottom-4 right-5 shadow-xl">
@@ -42,17 +51,9 @@ const MobileHeader = () => {
             </div>
           </div>
         </div>
-
-        {show && (
-          <div className="absolute flex flex-col items-center justify-center border-t-2 border-violet-400 w-[150px] right-3 top-15 bg-white shadow-sm pt-3 rounded-md">
-            <h1>Hovered Biroo!!</h1>
-            <h1>Hovered Biroo!!</h1>
-            <h1>Hovered Biroo!!</h1>
-
-            <div className="absolute p-2 bg-white -top-2.5 right-1 rotate-45 border-t-2 border-l-2 border-violet-400"></div>
-          </div>
-        )}
       </div>
+
+       {isSignupOpen && <SignupModel setIsOpen={setSignupOpen} />}
     </>
   );
 };

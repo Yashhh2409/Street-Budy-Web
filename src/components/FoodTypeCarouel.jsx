@@ -7,7 +7,6 @@ import { faArrowCircleRight } from "@fortawesome/free-solid-svg-icons";
 
 import Link from "next/link";
 
-import { API_BASE_URL, IMAGE_BASE_URL } from "@/utils/constant";
 import ShimmerMenu from "./shimmer/ShimmerMenu";
 import { useRouter } from "next/navigation";
 
@@ -19,12 +18,12 @@ const CardComponent = () => {
   useEffect(() => {
     const fetchFoodTypes = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/foodtype`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/foodtype`);
         const data = await res.json();
 
         const updatedData = data.map((item) => ({
           ...item,
-          img: `${IMAGE_BASE_URL}${item.img.startsWith("/") ? "" : "/"}${
+          img: `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${item.img.startsWith("/") ? "" : "/"}${
             item.img
           }`,
         }));
