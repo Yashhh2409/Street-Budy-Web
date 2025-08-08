@@ -37,7 +37,7 @@ const Restaurant = ({ params }) => {
   const { id } = React.use(params);
   const numId = parseInt(id, 10);
 
-  const { restaurantList, mcatList, productList, productAttributes } =
+  const { restaurantList, mcatList, productList, productAttributes, price } =
     useMyAppContext();
 
   const isMobile = useMediaQuery("(max-width: 767px)");
@@ -115,18 +115,7 @@ const Restaurant = ({ params }) => {
     product.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Price function
-  const price = (Pid) => {
-    const FoundProduct = productAttr.find((attr) => attr.product_id === Pid);
-
-    if (FoundProduct) {
-      const percent = (FoundProduct.normal_price * FoundProduct.discount) / 100;
-
-      const Finalprice = Number(FoundProduct.normal_price) - percent;
-
-      return Finalprice.toFixed(2);
-    }
-  };
+ 
 
   const discount = (Pid) => {
     const FoundProduct = productAttr.find((attr) => attr.product_id === Pid);

@@ -29,14 +29,14 @@ export default function RootLayout({ children }) {
         <div className="bg-[#F5F6F8] overflow-y-auto w-full overflow-x-hidden">
           {/* <Header /> */}
           {/* <Preloader /> */}
-          <MyAppProvider>
-            {/* <LayoutClient> */}
-            <AuthProvider>
+          <AuthProvider>
+            <MyAppProvider>
+              {/* <LayoutClient> */}
 
-           {children}
-            </AuthProvider>
-            {/* </LayoutClient> */}
-          </MyAppProvider>
+              {children}
+              {/* </LayoutClient> */}
+            </MyAppProvider>
+          </AuthProvider>
           {/* <Footer /> */}
         </div>
       </body>

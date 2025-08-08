@@ -3,10 +3,18 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 import CountryList from "country-list-with-dial-code-and-flag";
+import { AuthContext } from "./AuthContext";
 
 export const MyAppContext = createContext();
 
 export const MyAppProvider = ({ children }) => {
+  const { user } = useContext(AuthContext);
+
+  const [products, setProducts] = useState([]);
+  const [prevCartData, setPrevCartData] = useState([]);
+  const [userCartItems, setUserCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState({});
+
   const [restaurantList, setRestaurantList] = useState([]);
   const [mcatList, setmcatList] = useState([]);
   const [productList, setProductList] = useState([]);
@@ -16,31 +24,30 @@ export const MyAppProvider = ({ children }) => {
 
   const Currency = "₹";
 
-  // useEffect(() => {
-  //   const countriesData = emojiFlags.data.map((country) => ({
-  //     name: country.name,
-  //     code: country.code,
-  //     dialCode: country.dial_code,
-  //     image: `https://flagcdn.com/w40/${country.code.toLowerCase()}.png`
-  //   }));
+  // price
+  const price = (Pid) => {
+    const FoundProduct = products.find((p) => p.id === Pid);
 
-  //   setCountry(countriesData);
-  // }, []);
+    if (FoundProduct) {
+      const percent = (FoundProduct.normal_price * FoundProduct.discount) / 100;
+
+      const FinalPrice = FoundProduct.normal_price - percent;
+
+      return FinalPrice.toFixed(2);
+    }
+  };
 
   useEffect(() => {
-    const countriesData = CountryList.getAll()
+    const countriesData = CountryList.getAll();
 
     const filteredCountries = countriesData.map((c) => ({
       name: c.name,
       dialCode: c.dial_code,
-      image: `https://flagcdn.com/w40/${c.code.toLowerCase()}.png`
-    }))
+      image: `https://flagcdn.com/w40/${c.code.toLowerCase()}.png`,
+    }));
 
     setCountry(filteredCountries);
-
   }, []);
-
-
 
   const formatImagePaths = (data) => {
     return data.map((item) => ({
@@ -101,25 +108,24 @@ export const MyAppProvider = ({ children }) => {
     fetchMainCategories();
   }, []);
 
-  // Products
+  // All Products
   useEffect(() => {
-    const fetchProducts = async () => {
+    const getAllProducts = async () => {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products`
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/allproducts`
         );
-
-        const data = await response.json();
+        const data = await res.json();
 
         const updatedData = formatImagePaths(data);
 
-        setProductList(updatedData);
+        setProducts(updatedData);
       } catch (error) {
         console.error("Could'nt fetch products", error);
       }
     };
 
-    fetchProducts();
+    getAllProducts();
   }, []);
 
   //Products Attribute
@@ -138,16 +144,91 @@ export const MyAppProvider = ({ children }) => {
     fetchAttributes();
   }, []);
 
+  // Prev Cart data of all users
+  useEffect(() => {
+    const fetchCartData = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cart/prevcartdata`
+        );
+
+        const data = await response.json();
+        setPrevCartData(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchCartData();
+  }, []);
+
+  console.log("User in app context is:", user);
+  console.log("prev cartdata context is:", prevCartData);
+
+  // userCartItems
+  useEffect(() => {
+    if (user && prevCartData.length > 0) {
+      const userCart = prevCartData.filter(
+        (item) => Number(item.uid) === user.id
+      );
+      console.log("Matched cart for user:", userCart);
+      setUserCartItems(userCart);
+    }
+  }, [user, prevCartData]);
+
+const addToCart = async (product) => {
+  if (!user) {
+    alert("Login first");
+    return;
+  }
+
+ const newItem = {
+  uid: user.id,
+  product_id: product.id,
+  product_title: product.product_name,
+  price: product.normal_price,
+  product_img: product.img,
+  store_id: product.store_id || 1,              // Optional fallback
+  attribute_id: product.attribute_id || 0,      // Optional, if variations like veg/spicy are used
+  cart_type: "normal",                          // Could be 'subscription' later
+  variation: null,                              // To be set if user selects size, etc.
+  visible: 1,
+  subscription_data: null,                      // Required only for subscription carts
+  quantity: 1,
+};
+
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cart/add`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newItem),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message);
+    console.log("✅ Cart item saved to DB:", data);
+  } catch (err) {
+    console.error("❌ Cart add error:", err.message);
+  }
+};
+
+
+
+  console.log("updated Cart data:", cartItems);
+
   const value = {
     Currency,
     formatImagePaths,
     restaurantList,
     mcatList,
     productList,
+    products,
+    cartItems,
     productAttributes,
     showBar,
     setShowBar,
     countries,
+    price,
+    addToCart,
   };
 
   return (

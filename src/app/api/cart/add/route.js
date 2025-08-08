@@ -1,0 +1,83 @@
+import { connectDB } from "@/lib/db";
+import { NextResponse } from "next/server";
+
+export const POST = async (req) => {
+  try {
+    const db = await connectDB();
+    const body = await req.json();
+
+    console.log("Body getting:", body);
+
+    // Destructure with default values
+    const {
+      uid,
+      store_id = 1,
+      product_id,
+      attribute_id = 0,
+      quantity = 1,
+      price,
+      product_title = "",
+      product_img = "",
+      cart_type = "normal",
+      variation = null,
+      visible = 1,
+      subscription_data = null,
+    } = body;
+
+    // Basic validation
+    // if (!uid || !product_id || !price || !product_title) {
+    //   return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
+    // }
+
+    const [existingRows] = await db.query(
+      "SELECT id, quantity FROM tbl_cart_data WHERE uid = ? AND product_id = ? AND attribute_id = ?",
+      [uid, product_id, attribute_id]
+    );
+
+    if (existingRows.length > 0) {
+      // Item exists update quantity
+      const cartId = existingRows[0].id;
+      const newQty = existingRows[0].quantity + quantity;
+
+      await db.query(
+        "UPDATE tbl_cart_data SET quantity = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+        [newQty, cartId]
+      );
+
+      return NextResponse.json(
+        { message: "Quantity updated in cart" },
+        { status: 200 }
+      );
+    }
+
+    // No existing item insert new one
+    const insertSQL = `
+      INSERT INTO tbl_cart_data 
+      (uid, store_id, product_id, attribute_id, quantity, price, product_title, product_img, cart_type, variation, visible, subscription_data) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    await db.query(insertSQL, [
+      uid,
+      store_id,
+      product_id,
+      attribute_id,
+      quantity,
+      price,
+      product_title,
+      product_img,
+      cart_type,
+      variation,
+      visible,
+      subscription_data,
+    ]);
+
+    return NextResponse.json(
+      { message: "Item added to cart" },
+      { status: 201 }
+    );
+  } catch (err) {
+    console.error("Cart DB error:", err.message);
+    return NextResponse.json({ message: "Insert failed" }, { status: 500 });
+  }
+};

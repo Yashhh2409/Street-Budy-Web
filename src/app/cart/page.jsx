@@ -112,10 +112,16 @@ const page = () => {
             showBar
               ? "mt-12 md:mt-0 mb-32 md:mb-10"
               : "mt-6 md:mt-0 mb-32 md:mb-0"
-          }  w-full px-4 py-1 md:px-48 flex flex-col md:flex-row items-start justify-between gap-1`}
+          }  w-full px-4 py-1 md:px-48 flex flex-col md:flex-row items-start justify-between gap-1 bg-green-500`}
         >
-          <div className="w-full md:w-3/5 p-1 flex flex-col gap-2">
+          <div className="w-full md:w-3/5 bg-red-500 p-1 flex flex-col gap-2">
+
+          
             <div className="bg-white w-full py-4 rounded-lg flex items-center justify-between px-4">
+
+             
+
+             
               <div className="flex items-center gap-4">
                 <div className="w-[70px] h-[70px] rounded-md overflow-hidden">
                   <Image
@@ -133,10 +139,69 @@ const page = () => {
                   </div>
                 </div>
               </div>
+
+              
               <div className="border-2 w-5 h-5 rounded-full flex items-center justify-center">
                 <FontAwesomeIcon icon={faInfo} className="text-xs" />
               </div>
             </div>
+            <div className="bg-white w-full py-4 rounded-lg flex items-center justify-between px-4">
+
+             
+
+             
+              <div className="flex items-center gap-4">
+                <div className="w-[70px] h-[70px] rounded-md overflow-hidden">
+                  <Image
+                    src={"/assets/images/img-2.png"}
+                    width={35}
+                    height={35}
+                    className="w-full h-full object-cover rounded-md"
+                  />
+                </div>
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-bold">Grilled Eggplant Kebab</p>
+                  <div className="flex items-center space-x-2">
+                    <p className="text-sm font-bold"> {Currency} 42.76</p>
+                    <p className="text-gray-400 line-through">{Currency} 46</p>
+                  </div>
+                </div>
+              </div>
+
+              
+              <div className="border-2 w-5 h-5 rounded-full flex items-center justify-center">
+                <FontAwesomeIcon icon={faInfo} className="text-xs" />
+              </div>
+            </div>
+            <div className="bg-white w-full py-4 rounded-lg flex items-center justify-between px-4">
+
+             
+
+             
+              <div className="flex items-center gap-4">
+                <div className="w-[70px] h-[70px] rounded-md overflow-hidden">
+                  <Image
+                    src={"/assets/images/img-2.png"}
+                    width={35}
+                    height={35}
+                    className="w-full h-full object-cover rounded-md"
+                  />
+                </div>
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-bold">Grilled Eggplant Kebab</p>
+                  <div className="flex items-center space-x-2">
+                    <p className="text-sm font-bold"> {Currency} 42.76</p>
+                    <p className="text-gray-400 line-through">{Currency} 46</p>
+                  </div>
+                </div>
+              </div>
+
+              
+              <div className="border-2 w-5 h-5 rounded-full flex items-center justify-center">
+                <FontAwesomeIcon icon={faInfo} className="text-xs" />
+              </div>
+            </div>
+              
           </div>
 
           <div className="w-full md:w-2/5">
