@@ -4,6 +4,8 @@ import LayoutClient from "@/components/LayoutClient";
 import { MyAppProvider } from "@/context/MyAppContext";
 import Preloader from "@/components/Custom/Preloader";
 import { AuthProvider } from "@/context/AuthContext";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +33,7 @@ export default function RootLayout({ children }) {
           {/* <Preloader /> */}
           <AuthProvider>
             <MyAppProvider>
+              <ToastContainer />
               {/* <LayoutClient> */}
 
               {children}

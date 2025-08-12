@@ -7,10 +7,16 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { useContext } from "react";
+import { toast } from "react-toastify";
 
 const Modal = ({ isVisible, onClose = { onclose }, Item }) => {
-  const { Currency, price, addToCart } = useContext(MyAppContext);
+  const { Currency, price, addToCart, cartItems } = useContext(MyAppContext);
+
+  console.log("Item:", Item);
+
+  const router = useRouter();
 
   if (!isVisible) return null;
   return (
@@ -125,7 +131,7 @@ const Modal = ({ isVisible, onClose = { onclose }, Item }) => {
         <FontAwesomeIcon
           icon={faXmark}
           onClick={onClose}
-          className="absolute w-4 h-4 right-2 top-2 bg-white shadow-lg border-2 border-orange-500 p-2 rounded-full"
+          className="absolute w-4 h-4 right-2 top-2 bg-white shadow-lg border-2 border-orange-500 p-2 rounded-full cursor-pointer"
         />
 
         <div className="flex justify-between">
@@ -156,15 +162,17 @@ const Modal = ({ isVisible, onClose = { onclose }, Item }) => {
           <button
             onClick={() => {
               addToCart({
-                product_id: Item.id,
+                id: Item.id,
                 product_title: Item.product_name,
                 price: Item.normal_price,
                 product_img: Item.img,
                 option_values: Item.option_values,
-                Store_name: Item.store_name,
+                store_name: Item.store_name,
+                store_id: Item.store_id,
                 discount: Item.discount,
               });
-              console.log("Cart added");
+              toast.success("Added Bhaiii!!");
+              onClose();
             }}
             className="w-full bg-orange-500 rounded-full py-1 text-white font-bold cursor-pointer"
           >

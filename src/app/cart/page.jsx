@@ -10,6 +10,8 @@ import {
   faCircleChevronUp,
   faEdit,
   faInfo,
+  faMinus,
+  faPlus,
   faWallet,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
@@ -61,7 +63,7 @@ const DeliveryManTips = [
 ];
 
 const page = () => {
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  // const isMobile = useMediaQuery("(max-width: 767px)");
 
   const { showBar } = useContext(MyAppContext);
 
@@ -69,7 +71,9 @@ const page = () => {
   const [selectedDelTips, setSelectedDelTips] = useState("Not Now");
   const [isSummaryOpen, setSummaryOpen] = useState(true);
 
-  const { Currency } = useContext(MyAppContext);
+  const { Currency, userCartItems, price2, fetchedCartItems, updateCart } = useContext(MyAppContext);
+
+  console.log("CartItems in page:", userCartItems);
 
   const handleOrderSummary = () => {
     setSummaryOpen((prev) => !prev);
@@ -112,96 +116,63 @@ const page = () => {
             showBar
               ? "mt-12 md:mt-0 mb-32 md:mb-10"
               : "mt-6 md:mt-0 mb-32 md:mb-0"
-          }  w-full px-4 py-1 md:px-48 flex flex-col md:flex-row items-start justify-between gap-1 bg-green-500`}
+          }  w-full px-4 py-1 md:px-48 flex flex-col md:flex-row items-start justify-between gap-1 `}
         >
           <div className="w-full md:w-3/5 bg-red-500 p-1 flex flex-col gap-2">
-
-          
-            <div className="bg-white w-full py-4 rounded-lg flex items-center justify-between px-4">
-
-             
-
-             
-              <div className="flex items-center gap-4">
-                <div className="w-[70px] h-[70px] rounded-md overflow-hidden">
-                  <Image
-                    src={"/assets/images/img-2.png"}
-                    width={35}
-                    height={35}
-                    className="w-full h-full object-cover rounded-md"
-                  />
-                </div>
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-bold">Grilled Eggplant Kebab</p>
-                  <div className="flex items-center space-x-2">
-                    <p className="text-sm font-bold"> {Currency} 42.76</p>
-                    <p className="text-gray-400 line-through">{Currency} 46</p>
+            {fetchedCartItems.map((item) => (
+              <div
+                key={item.id}
+                className="bg-white w-full py-4 rounded-lg flex items-center justify-between px-4 hover:bg-red-50 transition-colors duration-300"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-[70px] h-[70px] rounded-md overflow-hidden">
+                    <Image
+                      src={item.product_img}
+                      width={35}
+                      height={35}
+                      className="w-full h-full object-cover rounded-md"
+                      alt={item.product_title}
+                    />
+                  </div>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-bold">{item.product_title}</p>
+                    <div className="flex items-center space-x-2">
+                      <p className="text-sm font-bold">
+                        {" "}
+                        {Currency} {item.price}
+                      </p>
+                      <p className="text-gray-400 line-through">
+                        {Currency} {item.price}
+                      </p>
+                    </div>
                   </div>
                 </div>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => updateCart(item.product_id, "decrease")} className="border-2 w-5 h-5 rounded-full flex items-center justify-center cursor-pointer">
+                    <FontAwesomeIcon icon={faMinus} className="text-xs" />
+                  </button>
+                  <p>{item.quantity}</p>
+                  <button onClick={() => updateCart( item.product_id ,"increase")} className="border-2 w-5 h-5 rounded-full flex items-center justify-center cursor-pointer">
+                    <FontAwesomeIcon icon={faPlus} className="text-xs" />
+                  </button>
+                  <button onClick={() => updateCart( item.product_id ,"delete")} className="w-5 h-5 flex items-center justify-center cursor-pointer">
+                    <FontAwesomeIcon icon={faXmark} className="text-xs" />
+                  </button>
+                </div>
               </div>
+            ))}
 
-              
-              <div className="border-2 w-5 h-5 rounded-full flex items-center justify-center">
-                <FontAwesomeIcon icon={faInfo} className="text-xs" />
-              </div>
-            </div>
-            <div className="bg-white w-full py-4 rounded-lg flex items-center justify-between px-4">
-
-             
-
-             
-              <div className="flex items-center gap-4">
-                <div className="w-[70px] h-[70px] rounded-md overflow-hidden">
-                  <Image
-                    src={"/assets/images/img-2.png"}
-                    width={35}
-                    height={35}
-                    className="w-full h-full object-cover rounded-md"
+            <div className="w-fit mx-auto text-orange-500 px-3 py-1 hover:bg-orange-100 rounded-full transition-colors duration-300 cursor-pointer">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded-full border-2 p-2 flex items-center justify-center">
+                  <FontAwesomeIcon
+                    icon={faPlus}
+                    className="text-md font-bold"
                   />
                 </div>
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-bold">Grilled Eggplant Kebab</p>
-                  <div className="flex items-center space-x-2">
-                    <p className="text-sm font-bold"> {Currency} 42.76</p>
-                    <p className="text-gray-400 line-through">{Currency} 46</p>
-                  </div>
-                </div>
-              </div>
-
-              
-              <div className="border-2 w-5 h-5 rounded-full flex items-center justify-center">
-                <FontAwesomeIcon icon={faInfo} className="text-xs" />
+                <button className="text-md font-bold cursor-pointer">Add more items</button>
               </div>
             </div>
-            <div className="bg-white w-full py-4 rounded-lg flex items-center justify-between px-4">
-
-             
-
-             
-              <div className="flex items-center gap-4">
-                <div className="w-[70px] h-[70px] rounded-md overflow-hidden">
-                  <Image
-                    src={"/assets/images/img-2.png"}
-                    width={35}
-                    height={35}
-                    className="w-full h-full object-cover rounded-md"
-                  />
-                </div>
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-bold">Grilled Eggplant Kebab</p>
-                  <div className="flex items-center space-x-2">
-                    <p className="text-sm font-bold"> {Currency} 42.76</p>
-                    <p className="text-gray-400 line-through">{Currency} 46</p>
-                  </div>
-                </div>
-              </div>
-
-              
-              <div className="border-2 w-5 h-5 rounded-full flex items-center justify-center">
-                <FontAwesomeIcon icon={faInfo} className="text-xs" />
-              </div>
-            </div>
-              
           </div>
 
           <div className="w-full md:w-2/5">

@@ -16,7 +16,7 @@ const page = () => {
         <MobileHeader />
       </div> */}
 
-  <div className="hidden md:block">
+  <div className="hidden md:block fixed top-0 left-0 w-full z-50">
     <DesktopHeader />
   </div>
 

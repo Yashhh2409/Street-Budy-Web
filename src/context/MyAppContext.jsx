@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 import CountryList from "country-list-with-dial-code-and-flag";
 import { AuthContext } from "./AuthContext";
+import { toast } from "react-toastify";
 
 export const MyAppContext = createContext();
 
@@ -13,7 +14,7 @@ export const MyAppProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
   const [prevCartData, setPrevCartData] = useState([]);
   const [userCartItems, setUserCartItems] = useState([]);
-  const [cartItems, setCartItems] = useState({});
+  const [fetchedCartItems, setFetchedCartItems] = useState([]);
 
   const [restaurantList, setRestaurantList] = useState([]);
   const [mcatList, setmcatList] = useState([]);
@@ -37,6 +38,19 @@ export const MyAppProvider = ({ children }) => {
     }
   };
 
+  // price2
+  const price2 = (Pid) => {
+    const FoundProduct = userCartItems.find((p) => p.id === Pid);
+
+    if (FoundProduct) {
+      const percent = (FoundProduct.price * FoundProduct.discount) / 100;
+
+      const FinalPrice = FoundProduct.price - percent;
+
+      return FinalPrice.toFixed(2);
+    }
+  };
+  // countries data
   useEffect(() => {
     const countriesData = CountryList.getAll();
 
@@ -66,6 +80,11 @@ export const MyAppProvider = ({ children }) => {
         ? `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${
             item.img.startsWith("/") ? "" : "/"
           }${item.img}`
+        : null,
+      product_img: item.product_img
+        ? `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${
+            item.product_img.startsWith("/") ? "" : "/"
+          }${item.product_img}`
         : null,
     }));
   };
@@ -149,11 +168,15 @@ export const MyAppProvider = ({ children }) => {
     const fetchCartData = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cart/prevcartdata`
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cart/prevcartdata?user_id=${user?.id}`
         );
 
         const data = await response.json();
-        setPrevCartData(data);
+
+        const updatedData = formatImagePaths(data);
+        if (updatedData) {
+          setPrevCartData(updatedData);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -161,8 +184,10 @@ export const MyAppProvider = ({ children }) => {
     fetchCartData();
   }, []);
 
-  console.log("User in app context is:", user);
-  console.log("prev cartdata context is:", prevCartData);
+  console.log("Logged in User:", user);
+  console.log("Logged in User id:", user?.id);
+  console.log("userCartItems gjnkhj:", userCartItems);
+  console.log("prev cart data:", prevCartData);
 
   // userCartItems
   useEffect(() => {
@@ -170,50 +195,128 @@ export const MyAppProvider = ({ children }) => {
       const userCart = prevCartData.filter(
         (item) => Number(item.uid) === user.id
       );
+
+      const updatedCart = formatImagePaths(userCart);
       console.log("Matched cart for user:", userCart);
-      setUserCartItems(userCart);
+      setUserCartItems(updatedCart);
     }
   }, [user, prevCartData]);
 
-const addToCart = async (product) => {
-  if (!user) {
-    alert("Login first");
-    return;
+  //updated fetched cart items
+  useEffect(() => {
+    if (!user?.id) {
+      return;
+    }
+
+    const fetchCart = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cart/getcart?uid=${user?.id}`
+        );
+
+        if (!res.ok) throw new Error("Failed to fetch cart");
+        const data = await res.json();
+        const updateData = formatImagePaths(data);
+        setFetchedCartItems(updateData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchCart();
+  }, [user]);
+
+  const addToCart = async (product) => {
+    const productId = product.id;
+
+    const existing = userCartItems.find(
+      (item) => item.product_id === productId
+    );
+
+    if (existing) {
+      const updatedCart = userCartItems.map((item) =>
+        item.product_id === productId
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      );
+      setUserCartItems(updatedCart);
+
+      // sending data to backend route
+      try {
+        await fetch("/api/cart/add", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...existing,
+            quantity: existing.quantity + 1,
+            uid: user?.id,
+          }),
+        });
+      } catch (error) {
+        console.error("Error updating cart on server:", error);
+      }
+    } else {
+      const newItem = {
+        product_id: productId,
+        product_title: product.product_title || product.product_name,
+        product_img: [product][0].product_img,
+        price: product.price,
+        quantity: 1,
+        option_values: product.option_values || null,
+        store_id: product.store_id,
+        store_name: product.store_name,
+        discount: product.discount || 0,
+        cart_type: "normal",
+        variation: null,
+        visible: 1,
+        subscription_data: "",
+      };
+
+      setUserCartItems([...userCartItems, newItem]);
+
+      try {
+        await fetch("/api/cart/add", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...newItem,
+            uid: user?.id,
+          }),
+        });
+      } catch (error) {
+        console.error("Error saving cart to server:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    console.log("User Cart Items:", userCartItems);
+  }, [userCartItems]);
+
+  useEffect(() => {
+    console.log("Fetchedd Cart Items:", fetchedCartItems);
+  }, [fetchedCartItems]);
+
+  const cartCount = userCartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+  const updateCart = async (product_id, action) => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cart/update`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          uid: user?.id,
+          product_id,
+          action
+        })
+      })
+
+      const data = await res.json();
+      console.log("updated cart:", data.cart);
+      
+    } catch (error) {
+      console.error(error);
+    }
   }
-
- const newItem = {
-  uid: user.id,
-  product_id: product.id,
-  product_title: product.product_name,
-  price: product.normal_price,
-  product_img: product.img,
-  store_id: product.store_id || 1,              // Optional fallback
-  attribute_id: product.attribute_id || 0,      // Optional, if variations like veg/spicy are used
-  cart_type: "normal",                          // Could be 'subscription' later
-  variation: null,                              // To be set if user selects size, etc.
-  visible: 1,
-  subscription_data: null,                      // Required only for subscription carts
-  quantity: 1,
-};
-
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cart/add`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newItem),
-    });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message);
-    console.log("✅ Cart item saved to DB:", data);
-  } catch (err) {
-    console.error("❌ Cart add error:", err.message);
-  }
-};
-
-
-
-  console.log("updated Cart data:", cartItems);
 
   const value = {
     Currency,
@@ -222,13 +325,17 @@ const addToCart = async (product) => {
     mcatList,
     productList,
     products,
-    cartItems,
+    userCartItems,
     productAttributes,
     showBar,
     setShowBar,
     countries,
     price,
+    price2,
     addToCart,
+    cartCount,
+    fetchedCartItems,
+    updateCart
   };
 
   return (

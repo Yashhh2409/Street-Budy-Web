@@ -12,7 +12,7 @@ import Footer from "./Footer";
 
 const DesktopPage = () => {
   return (
-    <div>
+    <div className="mt-30">
       {/* <DesktopHeader /> */}
       <div>
         <CardComponent />

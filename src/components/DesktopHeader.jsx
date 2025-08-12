@@ -1,14 +1,14 @@
-import React from 'react'
-import Navbar from './Navbar'
-import TopBar from './TopBar'
+import React from "react";
+import Navbar from "./Navbar";
+import TopBar from "./TopBar";
 
 const DesktopHeader = () => {
   return (
-    <>
-    <TopBar />
-    <Navbar />
-    </>
-  )
-}
+    <div className="">
+      <TopBar />
+      <Navbar />
+    </div>
+  );
+};
 
-export default DesktopHeader
+export default DesktopHeader;

@@ -8,10 +8,12 @@ export const POST = async (req) => {
 
     console.log("Body getting:", body);
 
-    // Destructure with default values
+ 
+
+    // Destructure with safe defaults
     const {
       uid,
-      store_id = 1,
+      store_id = "",
       product_id,
       attribute_id = 0,
       quantity = 1,
@@ -21,26 +23,36 @@ export const POST = async (req) => {
       cart_type = "normal",
       variation = null,
       visible = 1,
-      subscription_data = null,
+      subscription_data = "",
     } = body;
 
-    // Basic validation
-    // if (!uid || !product_id || !price || !product_title) {
-    //   return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
-    // }
+       const imageUrl = product_img;
+    const imageFilename = imageUrl ? imageUrl.split("https://admin.streetbuddy.in/").pop() : "";
 
+    if (!uid || !product_id || !store_id || !price) {
+      return NextResponse.json(
+        { message: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
+    // Check if item already exists
     const [existingRows] = await db.query(
-      "SELECT id, quantity FROM tbl_cart_data WHERE uid = ? AND product_id = ? AND attribute_id = ?",
+      `SELECT id, quantity 
+       FROM tbl_cart_data 
+       WHERE uid = ? AND product_id = ? AND attribute_id = ?`,
       [uid, product_id, attribute_id]
     );
 
     if (existingRows.length > 0) {
-      // Item exists update quantity
+      // Update quantity if exists
       const cartId = existingRows[0].id;
       const newQty = existingRows[0].quantity + quantity;
 
       await db.query(
-        "UPDATE tbl_cart_data SET quantity = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+        `UPDATE tbl_cart_data 
+         SET quantity = ?, updated_at = CURRENT_TIMESTAMP 
+         WHERE id = ?`,
         [newQty, cartId]
       );
 
@@ -50,7 +62,7 @@ export const POST = async (req) => {
       );
     }
 
-    // No existing item insert new one
+    // Insert new cart item
     const insertSQL = `
       INSERT INTO tbl_cart_data 
       (uid, store_id, product_id, attribute_id, quantity, price, product_title, product_img, cart_type, variation, visible, subscription_data) 
@@ -65,7 +77,7 @@ export const POST = async (req) => {
       quantity,
       price,
       product_title,
-      product_img,
+      imageFilename,
       cart_type,
       variation,
       visible,

@@ -16,9 +16,11 @@ import SignupModel from "./Custom/SignupModel";
 import useBodyScrollLock from "./Custom/useBodyScrollLock";
 import { AuthContext } from "@/context/AuthContext";
 import MenuModal from "./Custom/MenuModal";
+import { MyAppContext } from "@/context/MyAppContext";
 
 const Navbar = () => {
   const { user } = useContext(AuthContext);
+  const { cartCount } = useContext(MyAppContext);
 
   const [isSignupOpen, setSignupOpen] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -93,12 +95,18 @@ const Navbar = () => {
             <FontAwesomeIcon icon={faBell} className="text-gray-500 text-xl" />
             <Link
               href={"/cart"}
-              className="cursor-pointer w-8 h-8 hover:bg-orange-100 rounded-full flex items-center justify-center transition-colors duration-200 text-[16px]"
+              className="relative cursor-pointer w-8 h-8 hover:bg-orange-100 rounded-full flex items-center justify-center transition-colors duration-200 text-[16px]"
             >
               <FontAwesomeIcon
                 icon={faCartShopping}
                 className="text-gray-500 text-xl"
               />
+
+              {cartCount > 0 && (
+                <div className="absolute -top-1 right-0 text-[12px] font-bold w-4 h-4 bg-orange-400 text-white p-2 flex items-center justify-center rounded-full">
+                  {cartCount}
+                </div>
+              )}
             </Link>
             <div className="flex space-x-3 cursor-pointer">
               <FontAwesomeIcon

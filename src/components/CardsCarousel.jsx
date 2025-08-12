@@ -152,7 +152,8 @@ const CardsCarousel = () => {
   const [showModal, SetShowModal] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
 
-  console.log("Products dsfcvhjg", products);
+  console.log("all Products", products);
+  console.log("Selected Cards", selectedCard);
 
   useBodyScrollLock(showModal);
 
