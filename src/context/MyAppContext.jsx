@@ -184,10 +184,10 @@ export const MyAppProvider = ({ children }) => {
     fetchCartData();
   }, []);
 
-  console.log("Logged in User:", user);
-  console.log("Logged in User id:", user?.id);
-  console.log("userCartItems gjnkhj:", userCartItems);
-  console.log("prev cart data:", prevCartData);
+  // console.log("Logged in User:", user);
+  // console.log("Logged in User id:", user?.id);
+  // console.log("userCartItems gjnkhj:", userCartItems);
+  // console.log("prev cart data:", prevCartData);
 
   // userCartItems
   useEffect(() => {
@@ -225,20 +225,25 @@ export const MyAppProvider = ({ children }) => {
     fetchCart();
   }, [user]);
 
+  // add to cart items
   const addToCart = async (product) => {
     const productId = product.id;
+    const quantityToAdd = product.quantity || 1;
 
-    const existing = userCartItems.find(
+    const existing = fetchedCartItems.find(
       (item) => item.product_id === productId
     );
 
     if (existing) {
-      const updatedCart = userCartItems.map((item) =>
+
+      const updateQuantity = existing.quantity + quantityToAdd;
+
+      const updatedCart = fetchedCartItems.map((item) =>
         item.product_id === productId
-          ? { ...item, quantity: item.quantity + 1 }
+          ? { ...item, quantity: updateQuantity }
           : item
       );
-      setUserCartItems(updatedCart);
+      setFetchedCartItems(updatedCart);
 
       // sending data to backend route
       try {
@@ -247,7 +252,7 @@ export const MyAppProvider = ({ children }) => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             ...existing,
-            quantity: existing.quantity + 1,
+            quantity: updateQuantity,
             uid: user?.id,
           }),
         });
@@ -260,7 +265,7 @@ export const MyAppProvider = ({ children }) => {
         product_title: product.product_title || product.product_name,
         product_img: [product][0].product_img,
         price: product.price,
-        quantity: 1,
+        quantity: quantityToAdd,
         option_values: product.option_values || null,
         store_id: product.store_id,
         store_name: product.store_name,
@@ -271,7 +276,7 @@ export const MyAppProvider = ({ children }) => {
         subscription_data: "",
       };
 
-      setUserCartItems([...userCartItems, newItem]);
+      setFetchedCartItems([...fetchedCartItems, newItem]);
 
       try {
         await fetch("/api/cart/add", {
@@ -289,34 +294,70 @@ export const MyAppProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    console.log("User Cart Items:", userCartItems);
-  }, [userCartItems]);
-
-  useEffect(() => {
     console.log("Fetchedd Cart Items:", fetchedCartItems);
   }, [fetchedCartItems]);
 
-  const cartCount = userCartItems.reduce((acc, item) => acc + item.quantity, 0);
+  // cart Count
+  const cartCount = fetchedCartItems.reduce(
+    (acc, item) => acc + item.quantity,
+    0
+  );
 
+  // update cart items
   const updateCart = async (product_id, action) => {
+    // UI Update
+    setFetchedCartItems((prevCart) => {
+      const itemIdx = prevCart.findIndex(
+        (item) => item.product_id === product_id
+      );
+
+      // if item exist in cart
+      if (itemIdx !== -1) {
+        return prevCart.map((item) => {
+          if (item.product_id === product_id) {
+            let newQuantity = item.quantity;
+            if (action === "increase") newQuantity++;
+            if (action === "decrease" && item.quantity > 1) newQuantity--;
+            if (action === "delete") {
+              setFetchedCartItems((prev) =>
+                prev.filter((item) => item.product_id !== product_id)
+              );
+            }
+            return { ...item, quantity: newQuantity };
+          }
+          return item;
+        });
+      }
+
+      // if item not in cart
+      if (action === "increase") {
+        return [...prevCart, { product_id, quantity: 1 }];
+      }
+
+      return prevCart;
+    });
+
+    // send update to server
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cart/update`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-          uid: user?.id,
-          product_id,
-          action
-        })
-      })
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cart/update`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            uid: user?.id,
+            product_id,
+            action,
+          }),
+        }
+      );
 
       const data = await res.json();
       console.log("updated cart:", data.cart);
-      
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const value = {
     Currency,
@@ -335,7 +376,7 @@ export const MyAppProvider = ({ children }) => {
     addToCart,
     cartCount,
     fetchedCartItems,
-    updateCart
+    updateCart,
   };
 
   return (

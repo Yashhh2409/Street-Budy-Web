@@ -12,6 +12,7 @@ import {
   faInfo,
   faMinus,
   faPlus,
+  faTrash,
   faWallet,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
@@ -73,7 +74,7 @@ const page = () => {
 
   const { Currency, userCartItems, price2, fetchedCartItems, updateCart } = useContext(MyAppContext);
 
-  console.log("CartItems in page:", userCartItems);
+  console.log("CartItems in page:", fetchedCartItems);
 
   const handleOrderSummary = () => {
     setSummaryOpen((prev) => !prev);
@@ -118,11 +119,11 @@ const page = () => {
               : "mt-6 md:mt-0 mb-32 md:mb-0"
           }  w-full px-4 py-1 md:px-48 flex flex-col md:flex-row items-start justify-between gap-1 `}
         >
-          <div className="w-full md:w-3/5 bg-red-500 p-1 flex flex-col gap-2">
+          <div className="w-full md:w-3/5 p-1 flex flex-col gap-2">
             {fetchedCartItems.map((item) => (
               <div
                 key={item.id}
-                className="bg-white w-full py-4 rounded-lg flex items-center justify-between px-4 hover:bg-red-50 transition-colors duration-300"
+                className="bg-white w-full py-4 rounded-lg flex items-center justify-between px-4 hover:bg-red-50 transition-colors duration-300 cursor-pointer"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-[70px] h-[70px] rounded-md overflow-hidden">
@@ -155,8 +156,8 @@ const page = () => {
                   <button onClick={() => updateCart( item.product_id ,"increase")} className="border-2 w-5 h-5 rounded-full flex items-center justify-center cursor-pointer">
                     <FontAwesomeIcon icon={faPlus} className="text-xs" />
                   </button>
-                  <button onClick={() => updateCart( item.product_id ,"delete")} className="w-5 h-5 flex items-center justify-center cursor-pointer">
-                    <FontAwesomeIcon icon={faXmark} className="text-xs" />
+                  <button onClick={() => updateCart( item.product_id ,"delete")} className="w-5 h-5 flex items-center justify-center ml-5 hover:text-red-500 transition-colors duration-300 cursor-pointer">
+                    <FontAwesomeIcon icon={faTrash} className="text-lg" />
                   </button>
                 </div>
               </div>

@@ -5,6 +5,7 @@ import { faEye, faEyeSlash, faLock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 const SignIn = ({ PasswordToggle, isPassVisible, PageToggle }) => {
   const [formData, setFormData] = useState({
@@ -55,6 +56,8 @@ const SignIn = ({ PasswordToggle, isPassVisible, PageToggle }) => {
         console.log("Login success:", data);
          document.cookie = `token=${data.token}; path=/; max-age=${7 * 24 * 60 * 60}; secure`;
          window.location.href = "/";
+
+         toast.success("Login Success")
       } else {
         console.log("Login failed:", data);
       }

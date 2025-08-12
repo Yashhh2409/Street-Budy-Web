@@ -1,3 +1,4 @@
+import { AuthContext } from "@/context/AuthContext";
 import { MyAppContext } from "@/context/MyAppContext";
 import {
   faMinus,
@@ -8,13 +9,35 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
 
 const Modal = ({ isVisible, onClose = { onclose }, Item }) => {
-  const { Currency, price, addToCart, cartItems } = useContext(MyAppContext);
-
+  const { user } = useContext(AuthContext);
+  const {
+    price,
+    addToCart,
+    updateCart,
+    fetchedCartItems,
+  } = useContext(MyAppContext);
+  
   console.log("Item:", Item);
+
+  const [quantity, setQuantity] = useState(1);
+
+  const matchedItem = fetchedCartItems.find((cartItem) => cartItem.product_id === Item?.id);
+
+  // if matched in DB, show DB quantity, else show state quantity
+  const currentQuantity = matchedItem ? matchedItem.quantity : quantity;
+
+  const handleQuantityChange = (newQuantity) => {
+    if (newQuantity < 1) return;
+    setQuantity(newQuantity);
+
+
+  }
+
+
 
   const router = useRouter();
 
@@ -142,21 +165,27 @@ const Modal = ({ isVisible, onClose = { onclose }, Item }) => {
           </span>
         </div>
 
+
+{/* Quantity Selector & Add button  */}
         <div className="flex gap-2">
           <div className="flex gap-2 items-center">
-            <FontAwesomeIcon
-              icon={faMinus}
-              width={10}
-              height={10}
-              className="w-4 h-4 border-[2px] border-gray-500 rounded-full"
-            />
-            <p>1</p>
-            <FontAwesomeIcon
-              icon={faPlus}
-              width={10}
-              height={10}
-              className="w-4 h-4 border-[2px] border-gray-500 rounded-full"
-            />
+            <div onClick={() => handleQuantityChange(currentQuantity - 1)} className="cursor-pointer">
+              <FontAwesomeIcon
+                icon={faMinus}
+                width={10}
+                height={10}
+                className="w-4 h-4 border-[2px] border-gray-500 rounded-full"
+              />
+            </div>
+            <p>{currentQuantity}</p>
+            <div onClick={() => handleQuantityChange(currentQuantity + 1)} className="cursor-pointer">
+              <FontAwesomeIcon
+                icon={faPlus}
+                width={10}
+                height={10}
+                className="w-4 h-4 border-[2px] border-gray-500 rounded-full"
+              />
+            </div>
           </div>
 
           <button
@@ -170,6 +199,7 @@ const Modal = ({ isVisible, onClose = { onclose }, Item }) => {
                 store_name: Item.store_name,
                 store_id: Item.store_id,
                 discount: Item.discount,
+                quantity: currentQuantity,
               });
               toast.success("Added Bhaiii!!");
               onClose();
