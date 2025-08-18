@@ -9,6 +9,7 @@ import { Scrollbar } from "swiper/modules";
 import Modal from "./Custom/Modal";
 import useBodyScrollLock from "./Custom/useBodyScrollLock";
 import { MyAppContext } from "@/context/MyAppContext";
+import ProductDetailsModal from "./Custom/ProductDetailsModal";
 
 // const cardData = [
 //   {
@@ -212,11 +213,16 @@ const CardsCarousel = () => {
           </Swiper>
         </div>
       </div>
-      <Modal
+      <ProductDetailsModal
         isVisible={showModal}
         onClose={() => SetShowModal(false)}
         Item={selectedCard}
       />
+      {/* <Modal
+        isVisible={showModal}
+        onClose={() => SetShowModal(false)}
+        Item={selectedCard}
+      /> */}
     </>
   );
 };

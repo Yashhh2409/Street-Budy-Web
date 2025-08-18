@@ -15,6 +15,7 @@ export const MyAppProvider = ({ children }) => {
   const [prevCartData, setPrevCartData] = useState([]);
   const [userCartItems, setUserCartItems] = useState([]);
   const [fetchedCartItems, setFetchedCartItems] = useState([]);
+  const [productConfig, setProductConfig] = useState({});
 
   const [restaurantList, setRestaurantList] = useState([]);
   const [mcatList, setmcatList] = useState([]);
@@ -184,11 +185,6 @@ export const MyAppProvider = ({ children }) => {
     fetchCartData();
   }, []);
 
-  // console.log("Logged in User:", user);
-  // console.log("Logged in User id:", user?.id);
-  // console.log("userCartItems gjnkhj:", userCartItems);
-  // console.log("prev cart data:", prevCartData);
-
   // userCartItems
   useEffect(() => {
     if (user && prevCartData.length > 0) {
@@ -225,137 +221,28 @@ export const MyAppProvider = ({ children }) => {
     fetchCart();
   }, [user]);
 
-  // add to cart items
-  const addToCart = async (product) => {
-    const productId = product.id;
-    const quantityToAdd = product.quantity || 1;
-
-    const existing = fetchedCartItems.find(
-      (item) => item.product_id === productId
-    );
-
-    if (existing) {
-
-      const updateQuantity = existing.quantity + quantityToAdd;
-
-      const updatedCart = fetchedCartItems.map((item) =>
-        item.product_id === productId
-          ? { ...item, quantity: updateQuantity }
-          : item
-      );
-      setFetchedCartItems(updatedCart);
-
-      // sending data to backend route
-      try {
-        await fetch("/api/cart/add", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...existing,
-            quantity: updateQuantity,
-            uid: user?.id,
-          }),
-        });
-      } catch (error) {
-        console.error("Error updating cart on server:", error);
-      }
-    } else {
-      const newItem = {
-        product_id: productId,
-        product_title: product.product_title || product.product_name,
-        product_img: [product][0].product_img,
-        price: product.price,
-        quantity: quantityToAdd,
-        option_values: product.option_values || null,
-        store_id: product.store_id,
-        store_name: product.store_name,
-        discount: product.discount || 0,
-        cart_type: "normal",
-        variation: null,
-        visible: 1,
-        subscription_data: "",
-      };
-
-      setFetchedCartItems([...fetchedCartItems, newItem]);
-
-      try {
-        await fetch("/api/cart/add", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...newItem,
-            uid: user?.id,
-          }),
-        });
-      } catch (error) {
-        console.error("Error saving cart to server:", error);
-      }
-    }
-  };
-
-  useEffect(() => {
-    console.log("Fetchedd Cart Items:", fetchedCartItems);
-  }, [fetchedCartItems]);
-
-  // cart Count
-  const cartCount = fetchedCartItems.reduce(
-    (acc, item) => acc + item.quantity,
-    0
-  );
-
-  // update cart items
-  const updateCart = async (product_id, action) => {
-    // UI Update
-    setFetchedCartItems((prevCart) => {
-      const itemIdx = prevCart.findIndex(
-        (item) => item.product_id === product_id
-      );
-
-      // if item exist in cart
-      if (itemIdx !== -1) {
-        return prevCart.map((item) => {
-          if (item.product_id === product_id) {
-            let newQuantity = item.quantity;
-            if (action === "increase") newQuantity++;
-            if (action === "decrease" && item.quantity > 1) newQuantity--;
-            if (action === "delete") {
-              setFetchedCartItems((prev) =>
-                prev.filter((item) => item.product_id !== product_id)
-              );
-            }
-            return { ...item, quantity: newQuantity };
-          }
-          return item;
-        });
-      }
-
-      // if item not in cart
-      if (action === "increase") {
-        return [...prevCart, { product_id, quantity: 1 }];
-      }
-
-      return prevCart;
-    });
-
-    // send update to server
+  // Product Config
+  const fetchProductConfig = async (productId) => {
     try {
+      if (productConfig[productId]) {
+        return productConfig[productId];
+      }
+
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cart/update`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            uid: user?.id,
-            product_id,
-            action,
-          }),
-        }
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/product-config?product_id=${productId}`
       );
 
       const data = await res.json();
-      console.log("updated cart:", data.cart);
+
+      setProductConfig((prev) => ({
+        ...prev,
+        [productId]: data,
+      }));
+
+      return data;
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching product config", error);
+      return null;
     }
   };
 
@@ -373,10 +260,8 @@ export const MyAppProvider = ({ children }) => {
     countries,
     price,
     price2,
-    addToCart,
-    cartCount,
     fetchedCartItems,
-    updateCart,
+    fetchProductConfig,
   };
 
   return (

@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
-import db from "@/lib/db"; // Adjust if your DB utility is in a different path
 import jwt from "jsonwebtoken";
+const { connectDB } = require("@/lib/db");
 
-// 🔐 Secret must match your token creation
+// Secret must match your token creation
 const SECRET = process.env.JWT_SECRET;
 
 export const GET = async (req) => {
+  const db = await connectDB();
   try {
     const cookies = req.headers.get("cookie") || "";
     const token = cookies
@@ -20,17 +21,17 @@ export const GET = async (req) => {
     const decoded = jwt.verify(token, SECRET);
     const userId = decoded.id;
 
-    // 📦 Fetch user details
+    // Fetch user details
     const [userRes] = await db.query("SELECT id, name, email FROM tbl_user WHERE id = ?", [userId]);
     const user = userRes[0];
 
-    // 🛒 Fetch user cart
+    // Fetch user cart
     const [cart] = await db.query("SELECT * FROM tbl_cart WHERE user_id = ?", [userId]);
 
-    // 📦 Fetch orders
+    // Fetch orders
     const [orders] = await db.query("SELECT * FROM tbl_order WHERE user_id = ?", [userId]);
 
-    // 📍 Fetch location
+    // Fetch location
     const [locationRes] = await db.query("SELECT latitude, longitude FROM tbl_location WHERE user_id = ?", [userId]);
     const location = locationRes[0] || null;
 

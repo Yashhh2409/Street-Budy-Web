@@ -1,20 +1,14 @@
 "use client";
 
 import React, { useContext, useState } from "react";
-
-import useMediaQuery from "@/hooks/useMediaQuery";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
   faCircleChevronDown,
   faCircleChevronUp,
-  faEdit,
-  faInfo,
   faMinus,
   faPlus,
   faTrash,
-  faWallet,
-  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import DesktopHeader from "@/components/DesktopHeader";
@@ -22,6 +16,7 @@ import AppDownloadBar from "@/components/Custom/AppDownloadBar";
 import Image from "next/image";
 import { MyAppContext } from "@/context/MyAppContext";
 import Footer from "@/components/Footer";
+import { CartContext } from "@/context/CartContext";
 
 const DeliveryOptions = [
   {
@@ -72,9 +67,11 @@ const page = () => {
   const [selectedDelTips, setSelectedDelTips] = useState("Not Now");
   const [isSummaryOpen, setSummaryOpen] = useState(true);
 
-  const { Currency, userCartItems, price2, fetchedCartItems, updateCart } = useContext(MyAppContext);
+  const { Currency, userCartItems, price2 } = useContext(MyAppContext);
 
-  console.log("CartItems in page:", fetchedCartItems);
+  const { cartItems, updateCart } = useContext(CartContext);
+
+  console.log("CartItems in page:", cartItems);
 
   const handleOrderSummary = () => {
     setSummaryOpen((prev) => !prev);
@@ -120,7 +117,7 @@ const page = () => {
           }  w-full px-4 py-1 md:px-48 flex flex-col md:flex-row items-start justify-between gap-1 `}
         >
           <div className="w-full md:w-3/5 p-1 flex flex-col gap-2">
-            {fetchedCartItems.map((item) => (
+            {cartItems.map((item) => (
               <div
                 key={item.id}
                 className="bg-white w-full py-4 rounded-lg flex items-center justify-between px-4 hover:bg-red-50 transition-colors duration-300 cursor-pointer"
@@ -128,7 +125,7 @@ const page = () => {
                 <div className="flex items-center gap-4">
                   <div className="w-[70px] h-[70px] rounded-md overflow-hidden">
                     <Image
-                      src={item.product_img}
+                      src={item.product_img || "/assets/square_placeholder.png"}
                       width={35}
                       height={35}
                       className="w-full h-full object-cover rounded-md"
@@ -149,14 +146,23 @@ const page = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => updateCart(item.product_id, "decrease")} className="border-2 w-5 h-5 rounded-full flex items-center justify-center cursor-pointer">
+                  <button
+                    onClick={() => updateCart(item.product_id, "decrease")}
+                    className="border-2 w-5 h-5 rounded-full flex items-center justify-center cursor-pointer"
+                  >
                     <FontAwesomeIcon icon={faMinus} className="text-xs" />
                   </button>
                   <p>{item.quantity}</p>
-                  <button onClick={() => updateCart( item.product_id ,"increase")} className="border-2 w-5 h-5 rounded-full flex items-center justify-center cursor-pointer">
+                  <button
+                    onClick={() => updateCart(item.product_id, "increase")}
+                    className="border-2 w-5 h-5 rounded-full flex items-center justify-center cursor-pointer"
+                  >
                     <FontAwesomeIcon icon={faPlus} className="text-xs" />
                   </button>
-                  <button onClick={() => updateCart( item.product_id ,"delete")} className="w-5 h-5 flex items-center justify-center ml-5 hover:text-red-500 transition-colors duration-300 cursor-pointer">
+                  <button
+                    onClick={() => updateCart(item.product_id, "delete")}
+                    className="w-5 h-5 flex items-center justify-center ml-5 hover:text-red-500 transition-colors duration-300 cursor-pointer"
+                  >
                     <FontAwesomeIcon icon={faTrash} className="text-lg" />
                   </button>
                 </div>
@@ -171,7 +177,9 @@ const page = () => {
                     className="text-md font-bold"
                   />
                 </div>
-                <button className="text-md font-bold cursor-pointer">Add more items</button>
+                <button className="text-md font-bold cursor-pointer">
+                  Add more items
+                </button>
               </div>
             </div>
           </div>

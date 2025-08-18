@@ -17,10 +17,11 @@ import useBodyScrollLock from "./Custom/useBodyScrollLock";
 import { AuthContext } from "@/context/AuthContext";
 import MenuModal from "./Custom/MenuModal";
 import { MyAppContext } from "@/context/MyAppContext";
+import { CartContext } from "@/context/CartContext";
 
 const Navbar = () => {
   const { user } = useContext(AuthContext);
-  const { cartCount } = useContext(MyAppContext);
+  const { cartCount } = useContext(CartContext);
 
   const [isSignupOpen, setSignupOpen] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);

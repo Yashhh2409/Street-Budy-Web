@@ -47,13 +47,12 @@ export const POST = async (req) => {
     if (existingRows.length > 0) {
       // Update quantity if exists
       const cartId = existingRows[0].id;
-      const newQty = existingRows[0].quantity + quantity;
 
       await db.query(
         `UPDATE tbl_cart_data 
          SET quantity = ?, updated_at = CURRENT_TIMESTAMP 
          WHERE id = ?`,
-        [newQty, cartId]
+        [quantity, cartId]
       );
 
       return NextResponse.json(

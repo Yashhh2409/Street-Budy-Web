@@ -1,81 +1,237 @@
-import { faClock, faHeart, faStar } from "@fortawesome/free-solid-svg-icons";
+"use client";
+
+import { AuthContext } from "@/context/AuthContext";
+import { CartContext } from "@/context/CartContext";
+import { MyAppContext } from "@/context/MyAppContext";
+import {
+  faMinus,
+  faPlus,
+  faStar,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
-const RestaurantCard = ({layout = "horizontal"}) => {
+const ProductDetailsModal = ({ isVisible, onClose, Item }) => {
+  const { Currency, price, fetchProductConfig } = useContext(MyAppContext);
+  const { cartItems, addToCart, updateCart } = useContext(CartContext);
 
-  const isSquare = layout === "square";
+  const [config, setConfig] = useState(null);
 
+  const cartItem = cartItems.find((c) => c.product_id === Item?.id);
+  const quantity = cartItem ? cartItem.quantity : 1;
+
+  const [tempQuantity, setTempQuantity] = useState(quantity);
+
+  useEffect(() => {
+    setTempQuantity(quantity);
+  }, [quantity]);
+
+  useEffect(() => {
+    console.log("Item:", Item);
+  }, []);
+
+  const handleIncrease = () => {
+    setTempQuantity((prev) => prev + 1);
+  };
+
+  const handleDecrease = () => {
+    setTempQuantity((prev) => {
+      if (prev > 1) {
+        return prev - 1;
+      }
+      return prev;
+    });
+  };
+
+  useEffect(() => {
+    if (Item?.id) {
+      fetchProductConfig(Item.id).then((data) => {
+        setConfig(data);
+      });
+    }
+  }, [Item, Item?.id]);
+
+  console.log("config:", config);
+
+  if (!isVisible) return null;
   return (
-    <>
-      <div className="relative min-w-[260px] h-[190px] rounded-lg overflow-hidden">
-        <div className="relative overflow-hidden w-full h-1/2">
-          <Image
-            src={"/assets/Restaurant/restCard-1.png"}
-            width={300}
-            height={250}
-            alt="Img"
-            className="w-full h-full object-fill hover:scale-125 transition-transform duration-300"
-          />
-
-          {/* Heart icon */}
-          <div className="absolute top-3 right-3 z-10">
-            <FontAwesomeIcon
-              icon={faHeart}
-              className="text-orange-200 text-2xl"
-            />
-          </div>
-
-          {/* Polygon with distance */}
-          <div className="absolute w-[90px] h-[60px] -bottom-0.5 right-2 z-10">
-            <div
-              style={{
-                clipPath: "polygon(21% 64%, 80% 64%, 100% 100%, 0% 100%)",
-              }}
-              className="bg-white w-full h-full"
-            ></div>
-
-            <p className="absolute font-semibold bottom-[0.5px] right-[22px] text-orange-500 text-sm">
-              1.3 km
-            </p>
-          </div>
-        </div>
-
-        <div className="w-full h-1/2 bg-white p-1">
-          <div className="flex justify-between">
-            <div></div>
-            <div className="w-[175px] p-1 self-end">
-              <p className="text-md font-bold">Hungry Puppets</p>
-              <p className="text-sm truncate text-gray-500">
-                Bengali, Indian, Pizza, sdfcsghiudf
+    <div className="fixed bottom-0 md:inset-0 md:bg-black/25 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="relative bg-white overflow-x-hidden mb-12 flex flex-col gap-4 w-full md:w-[500px] p-4 rounded-t-2xl   md:rounded-2xl z-50 md:z-0">
+        <div className="h-[400px] overflow-y-auto mb-10">
+          <div className="flex gap-2 items-center ">
+            <div className="relative w-[100px] md:w-[120px] h-[100px] md:h-[120px] overflow-hidden bg-red-800 rounded-2xl">
+              <Image
+                src={Item?.img}
+                alt="img"
+                width={100}
+                height={100}
+                className="w-full h-full object-cover rounded-2xl"
+              />
+              <p className="absolute text-sm bottom-0 text-white font-bold px-2 bg-gradient-to-r from-black to-transparent">
+                {Item?.discount}% OFF
               </p>
             </div>
+            <div>
+              <p className="font-bold">{Item?.product_name}</p>
+              <p className="text-orange-500 text-sm">{Item?.store_name}</p>
+              <div className="flex gap-1 text-sm text-gray-500 items-center">
+                <FontAwesomeIcon icon={faStar} />
+                <FontAwesomeIcon icon={faStar} />
+                <FontAwesomeIcon icon={faStar} />
+                <FontAwesomeIcon icon={faStar} />
+                <p>(0)</p>
+              </div>
+              <span className="flex gap-2">
+                <p className="text-gray-500 line-through">
+                  {Item?.normal_price}
+                </p>
+                <p>{price(Item?.id)}</p>
+              </span>
+            </div>
           </div>
-          <div className="flex space-x-2 items-center justify-center p-2 text-sm">
-            <div className="flex items-center space-x-1">
-              <FontAwesomeIcon icon={faStar} />
-              <p>5.8</p>
+
+          <div className="flex flex-col justify-between py-2">
+            <div className="flex justify-between mb-1">
+              <p className="text-gray-800 font-bold">Description</p>
+              <div className="w-fit flex items-center gap-1 border-amber-600 shadow-xl px-2 rounded-full">
+                {Item?.isVeg ? (
+                  <div className="green-veg-icon-border">
+                    <div className="green-veg-icon-dot"></div>
+                  </div>
+                ) : (
+                  <div className="red-non-veg-icon-border">
+                    <div className="red-non-veg-icon-dot"></div>
+                  </div>
+                )}
+                <div>{Item?.isVeg}</div>
+                <p className="text-sm">{Item?.isVeg ? "Veg" : "Non-Veg"}</p>
+              </div>
             </div>
-            <div className="flex items-center space-x-1">
-              <FontAwesomeIcon icon={faClock} />
-              <p>30-40-min</p>
-            </div>
+            <p className="text-sm text-gray-500">
+              {Item?.Description ||
+                "If your are looking for good food near by your area street buddy is the only option you have!"}
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-2 bg-gray-100 rounded-xl py-4 px-2">
+            {/* Options */}
+            {config?.options && config.options.length > 0 && (
+              <div className="flex flex-col gap-2 py-2">
+                {config.options.map((opt, index) => (
+                  <>
+                    <p className="text-gray-800 font-bold">{opt.option_name}</p>
+                    {JSON.parse(opt.option_values).map((opt_val) => (
+                      <label
+                        key={index}
+                        className="flex items-center justify-between p-2 rounded cursor-pointer bg-gray-50"
+                      >
+                        <div className="flex items-center gap-2">
+                          <input type="radio" name="option" value={opt.id} />
+                          <span>{opt_val.name}</span>
+                        </div>
+                        <p>
+                          {Currency} {opt_val.price}
+                        </p>
+                      </label>
+                    ))}
+                  </>
+                ))}
+              </div>
+            )}
+
+            {/* Addons */}
+            {config?.addons && config.addons.length > 0 && (
+              <div className="flex flex-col gap-2 py-2">
+                <p className="text-gray-800 font-bold">Addons</p>
+                {config.addons.map((addon, index) => (
+                  <label
+                    key={index}
+                    className="flex items-center justify-between p-2 rounded cursor-pointer bg-gray-50"
+                  >
+                    <div className="flex items-center gap-2">
+                      <input type="checkbox" value={addon.id} />
+                      <span>{addon.addon_name}</span>
+                    </div>
+                    <p>
+                      {Currency} {addon.addon_price}
+                    </p>
+                  </label>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="absolute bottom-3 left-10 -translate-1/2 w-[65px]  h-[65px] rounded-xl border-4 border-[#F6E5DA] overflow-hidden ">
-          <Image
-            src={"/assets/Restaurant/icon-1.png"}
-            alt="img"
-            width={400}
-            height={200}
-            className="w-full h-full object-contain hover:scale-125 transition-transform duration-300"
-          />
+        <div className="fixed md:hidden left-0 bottom-0 border-t-[2px] border-gray-200 w-full h-[100px] p-4 flex flex-col gap-2">
+          <div className="flex justify-between">
+            <p className="text-orange-500 font-bold">Total Amount:</p>
+            <span className="flex gap-2">
+              <p className="line-through text-gray-500">$ 600.00</p>
+              <p className="text-orange-500 font-bold">$ 540.00</p>
+            </span>
+          </div>
+
+          {/* Quantity Selector & Add button  */}
+          <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
+              <div onClick={handleDecrease} className="cursor-pointer">
+                <FontAwesomeIcon
+                  icon={faMinus}
+                  width={10}
+                  height={10}
+                  className="w-4 h-4 border-[2px] border-gray-500 rounded-full"
+                />
+              </div>
+              <p>{tempQuantity}</p>
+              <div onClick={handleIncrease} className="cursor-pointer">
+                <FontAwesomeIcon
+                  icon={faPlus}
+                  width={10}
+                  height={10}
+                  className="w-4 h-4 border-[2px] border-gray-500 rounded-full"
+                />
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                addToCart(
+                  {
+                    id: Item.id,
+                    product_title: Item.product_name,
+                    price: Item.normal_price,
+                    product_img: Item.img,
+                    option_values: Item.option_values,
+                    store_name: Item.store_name,
+                    store_id: Item.store_id,
+                    discount: Item.discount,
+                  },
+                  tempQuantity
+                );
+                toast.success(
+                  `${quantity > 1 ? "Cart Updated" : "Added To Cart"}`
+                );
+                onClose();
+              }}
+              className="w-full bg-orange-500 rounded-full py-1 text-white font-bold cursor-pointer"
+            >
+              {quantity > 1 ? "Update Cart" : "Add To Cart"}
+            </button>
+          </div>
         </div>
+
+        <FontAwesomeIcon
+          icon={faXmark}
+          onClick={onClose}
+          className="absolute w-4 h-4 right-2 top-2 bg-white shadow-lg border-2 border-orange-500 p-2 rounded-full cursor-pointer"
+        />
       </div>
-    </>
+    </div>
   );
 };
 
-export default RestaurantCard;
+export default ProductDetailsModal;

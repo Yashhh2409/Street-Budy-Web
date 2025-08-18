@@ -4,8 +4,9 @@ import LayoutClient from "@/components/LayoutClient";
 import { MyAppProvider } from "@/context/MyAppContext";
 import Preloader from "@/components/Custom/Preloader";
 import { AuthProvider } from "@/context/AuthContext";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import { CartProvider } from "@/context/CartContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,18 +30,14 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="bg-[#F5F6F8] overflow-y-auto w-full overflow-x-hidden">
-          {/* <Header /> */}
-          {/* <Preloader /> */}
           <AuthProvider>
             <MyAppProvider>
-              <ToastContainer />
-              {/* <LayoutClient> */}
-
-              {children}
-              {/* </LayoutClient> */}
+              <CartProvider>
+                <ToastContainer />
+                {children}
+              </CartProvider>
             </MyAppProvider>
           </AuthProvider>
-          {/* <Footer /> */}
         </div>
       </body>
     </html>
