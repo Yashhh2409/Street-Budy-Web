@@ -99,11 +99,13 @@ export const CartProvider = ({ children }) => {
             uid: user.id,
             store_id: product.store_id || "",
             product_id: product.id,
-            attribute_id: product.attribute_id || 0,
+            attribute_id: product.attribute_id,
             quantity: selectedQuantity,
             price: product.price,
+            discount: product.discount,
             product_title: product.product_title,
             product_img: product.product_img,
+            variation: product.variations,
           }),
         });
 
@@ -183,14 +185,65 @@ export const CartProvider = ({ children }) => {
 
   const cartCount = cartItems.length;
 
-  // const getDiscountedPrice = (price, discount) => {
-  //   if (!discount) return price;
-  //   return price - (price * discount) / 100;
-  // }
+  const calculateCartSummary = (cartItems, products) => {
+    let totals = {
+      itemsTotal: 0,
+      optionsTotal: 0,
+      addonsTotal: 0,
+      discountTotal: 0,
+      finalTotal: 0,
+    };
 
-  // const calculateItemTotal = (item, quantity)
+    cartItems.forEach((item) => {
+      const qty = item.quantity;
+      const basePrice = Number(item.price) * qty;
 
-  const value = { addToCart, cartItems, setCartItems, cartCount, updateCart };
+      // discount
+      const productDetails = products.find((p) => p.id === item.product_id);
+      const productDiscount = productDetails?.discount || 0;
+      const discount = productDiscount * qty;
+
+      let optionTotal = 0;
+      let addonsTotal = 0;
+
+      if (item.variation) {
+        const variation =
+          typeof item.variation === "string"
+            ? JSON.parse(item.variation)
+            : item.variation;
+
+            variation.forEach((v) => {
+              const price = Number(v.values?.price || 0);
+              const label = v.values?.label?.toLowerCase?.() || "";
+
+              if (label.includes("quantity")) {
+                // means its an option - size etc.
+                optionTotal += price + qty;
+              } else if (label.includes("add-on" || "addon")) {
+                // means its addons
+                addonsTotal += price * qty;
+              }
+            })
+      }
+
+      totals.itemsTotal += basePrice;
+      totals.optionsTotal += optionTotal;
+      totals.addonsTotal += addonsTotal;
+      totals.discountTotal += discount;
+      totals.finalTotal += basePrice + optionTotal + addonsTotal - discount;
+    });
+
+    return totals;
+  };
+
+  const value = {
+    addToCart,
+    cartItems,
+    setCartItems,
+    cartCount,
+    updateCart,
+    calculateCartSummary,
+  };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };

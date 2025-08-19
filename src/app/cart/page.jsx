@@ -17,6 +17,8 @@ import Image from "next/image";
 import { MyAppContext } from "@/context/MyAppContext";
 import Footer from "@/components/Footer";
 import { CartContext } from "@/context/CartContext";
+import ProductDetailsModal from "@/components/Custom/ProductDetailsModal";
+import useBodyScrollLock from "@/components/Custom/useBodyScrollLock";
 
 const DeliveryOptions = [
   {
@@ -63,18 +65,36 @@ const page = () => {
 
   const { showBar } = useContext(MyAppContext);
 
-  const [selectedDelivery, setSelectedDelivery] = useState("Home Delivery");
-  const [selectedDelTips, setSelectedDelTips] = useState("Not Now");
   const [isSummaryOpen, setSummaryOpen] = useState(true);
+  const [selectedCartItem, setSelectedCartItem] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
-  const { Currency, userCartItems, price2 } = useContext(MyAppContext);
+  useBodyScrollLock(showModal);
 
-  const { cartItems, updateCart } = useContext(CartContext);
+  const { Currency, userCartItems, price2, products } =
+    useContext(MyAppContext);
 
-  console.log("CartItems in page:", cartItems);
+  const { cartItems, updateCart, calculateCartSummary } =
+    useContext(CartContext);
+
+  const totals = calculateCartSummary(cartItems, products);
+
+  console.log("CartItems in cart page:", cartItems);
 
   const handleOrderSummary = () => {
     setSummaryOpen((prev) => !prev);
+  };
+
+  const getProductFromCartItem = (cartItem, products) => {
+    const product = products.find((p) => p.id === cartItem.product_id);
+
+    if (!product) return null;
+
+    return {
+      ...product,
+      quantity: cartItem.quantity,
+      variations: cartItem.variation,
+    };
   };
 
   return (
@@ -119,6 +139,13 @@ const page = () => {
           <div className="w-full md:w-3/5 p-1 flex flex-col gap-2">
             {cartItems.map((item) => (
               <div
+                onClick={() => {
+                  const productData = getProductFromCartItem(item, products);
+                  console.log("prod data ---> ", productData);
+
+                  setSelectedCartItem(productData);
+                  setShowModal(true);
+                }}
                 key={item.id}
                 className="bg-white w-full py-4 rounded-lg flex items-center justify-between px-4 hover:bg-red-50 transition-colors duration-300 cursor-pointer"
               >
@@ -147,20 +174,29 @@ const page = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => updateCart(item.product_id, "decrease")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      updateCart(item.product_id, "decrease");
+                    }}
                     className="border-2 w-5 h-5 rounded-full flex items-center justify-center cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faMinus} className="text-xs" />
                   </button>
                   <p>{item.quantity}</p>
                   <button
-                    onClick={() => updateCart(item.product_id, "increase")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      updateCart(item.product_id, "increase");
+                    }}
                     className="border-2 w-5 h-5 rounded-full flex items-center justify-center cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faPlus} className="text-xs" />
                   </button>
                   <button
-                    onClick={() => updateCart(item.product_id, "delete")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      updateCart(item.product_id, "delete");
+                    }}
                     className="w-5 h-5 flex items-center justify-center ml-5 hover:text-red-500 transition-colors duration-300 cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faTrash} className="text-lg" />
@@ -210,21 +246,36 @@ const page = () => {
               {isSummaryOpen && (
                 <div>
                   <span className="py-2 flex items-center justify-between">
-                    <p>Subtotal</p>
-                    <p>{Currency} 1200</p>
+                    <p>Items Price</p>
+                    <p>
+                      {Currency} {totals.itemsTotal}
+                    </p>
                   </span>
+
+                  {totals.optionsTotal > 0 && (
+                    <span className="py-2 flex items-center justify-between">
+                      <p>Variations</p>
+                      <p>
+                        {Currency} {totals.optionsTotal}
+                      </p>
+                    </span>
+                  )}
+
                   <span className="py-2 flex items-center justify-between">
-                    <p>Subtotal</p>
-                    <p>{Currency} 1200</p>
+                    <p>Discount</p>
+                    <p>
+                      {Currency} {totals.discountTotal}
+                    </p>
                   </span>
-                  <span className="py-2 flex items-center justify-between">
-                    <p>Subtotal</p>
-                    <p>{Currency} 1200</p>
-                  </span>
-                  <span className="py-2 flex items-center justify-between">
-                    <p>Subtotal</p>
-                    <p>{Currency} 1200</p>
-                  </span>
+
+                  {totals.addonsTotal > 0 && (
+                    <span className="py-2 flex items-center justify-between">
+                      <p>Addons</p>
+                      <p>
+                        {Currency} {totals.addonsTotal}
+                      </p>
+                    </span>
+                  )}
                 </div>
               )}
 
@@ -249,7 +300,9 @@ const page = () => {
               <div className="hidden md:block">
                 <span className="flex items-center justify-between text-lg text-orange-500 py-3 font-bold">
                   <p>Total Amount</p>
-                  <p>{Currency} 1198.00</p>
+                  <p>
+                    {Currency} {totals.finalTotal}
+                  </p>
                 </span>
 
                 <button className="w-full bg-orange-500 rounded-md text-white tracking-wider py-1.5 font-bold cursor-pointer">
@@ -263,13 +316,21 @@ const page = () => {
         <div className="w-full py-4 bg-white block md:hidden fixed bottom-0 px-4">
           <span className="flex items-center justify-between text-lg text-orange-500 py-3 font-bold">
             <p>Total Amount</p>
-            <p>{Currency} 1198.00</p>
+            <p>
+              {Currency} {totals.finalTotal}
+            </p>
           </span>
 
           <button className="w-full bg-orange-500 rounded-md text-white tracking-wider py-1.5 font-bold cursor-pointer">
             Confirm Delivery Details
           </button>
         </div>
+
+        <ProductDetailsModal
+          isVisible={showModal}
+          onClose={() => setShowModal(false)}
+          Item={selectedCartItem}
+        />
       </div>
       <div className="hidden md:block">
         <Footer />

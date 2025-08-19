@@ -109,11 +109,11 @@ const Navbar = () => {
                 </div>
               )}
             </Link>
-            <div className="flex space-x-3 cursor-pointer">
-              <FontAwesomeIcon
+            <div className="flex space-x-3 cursor-pointer bg-orange-400 tracking-wide text-white text-sm px-4 py-1 font-semibold rounded-sm">
+              {/* <FontAwesomeIcon
                 icon={faLock}
                 className="text-gray-500 text-xl"
-              />
+              /> */}
               {user ? (
                 <h1 onClick={handleLogout}>Logout</h1>
               ) : (

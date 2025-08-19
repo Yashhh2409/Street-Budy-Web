@@ -12,10 +12,10 @@ import {
 
 const menuItems = [
   { id: "home", icon: faHome },
-  // { id: "wishlist", icon: faHeart },
-  // { id: "cart", icon: faCartShopping },
+  { id: "wishlist", icon: faHeart },
+  { id: "cart", icon: faCartShopping },
   { id: "orders", icon: faBagShopping },
-  // { id: "menu", icon: faBars },
+  { id: "menu", icon: faBars },
 ];
 const MobileMenuBar = ({ active, onScreenChange }) => {
   return (

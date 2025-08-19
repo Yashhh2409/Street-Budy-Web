@@ -19,7 +19,7 @@ export const GET = async () => {
     // );
 
     const [products] = await db.query(
-      `select p.id, p.title as product_name, sd.id as store_id, sd.title as store_name, p.img, tpa.normal_price, tpa.discount, tpo.option_name, tpo.option_values
+      `select p.id, p.title as product_name, sd.id as store_id, tpa.id as attribute_id, sd.title as store_name, p.img, tpa.normal_price, tpa.discount, tpo.option_name, tpo.option_values
 from tbl_product as p
 inner join service_details as sd on p.store_id = sd.id
 inner join tbl_product_attribute as tpa on p.id = tpa.product_id

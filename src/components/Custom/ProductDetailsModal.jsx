@@ -25,7 +25,6 @@ const ProductDetailsModal = ({ isVisible, onClose, Item }) => {
 
   console.log("selectedOption", selectedOption);
   console.log("selectedAddons", selectedAddons);
-  
 
   const cartItem = cartItems.find((c) => c.product_id === Item?.id);
   const quantity = cartItem ? cartItem.quantity : 1;
@@ -41,13 +40,32 @@ const ProductDetailsModal = ({ isVisible, onClose, Item }) => {
   });
 
   // Reset options, addons when new product is selected
-  useEffect(() => {
-    if (Item) {
+useEffect(() => {
+  if (Item) {
+    if (Item.variation) {
+      const variation = typeof Item.variation === "string"
+        ? JSON.parse(Item.variation)
+        : Item.variation;
+
+      // First entry = option (like Large, Medium, etc.)
+      const option = variation[0]; 
+      setSelectedOption(option?.values || null);
+
+      // Rest entries = addons
+      const addons = variation.slice(1).map(v => v.values);
+      setSelectedAddons(addons);
+
+      // Restore quantity
+      setTempQuantity(Item.quantity || 1);
+    } else {
       setSelectedOption(null);
       setSelectedAddons([]);
       setTempQuantity(1);
     }
-  }, [Item?.id])
+  }
+}, [Item?.id]);
+
+
 
   const handleIncrease = () => {
     setTempQuantity((prev) => prev + 1);
@@ -70,46 +88,67 @@ const ProductDetailsModal = ({ isVisible, onClose, Item }) => {
     }
   }, [Item, Item?.id]);
 
-  // sizes radio button 
+  // sizes radio button
   const handleOptionChange = (opt_val) => {
     setSelectedOption(opt_val);
-  }
+  };
 
-  // selected addons 
+  // selected addons
   const handleAddonChange = (addon) => {
     setSelectedAddons((prev) => {
-      if(prev.includes(addon)) {
+      if (prev.includes(addon)) {
         return prev.filter((a) => a !== addon);
       } else {
-        return [...prev, addon]
+        return [...prev, addon];
       }
-    })
-  }
-
-  // calculate Normal total price
-  // const calculateOriginalTotal = () => {
-  //   let optionTotal = selectedOption ? selectedOption.price : 0;
-  //   let addonsTotal = selectedAddons.reduce((sum, addon) => sum + addon.price, 0);
-  //   return (basePrice + addonsTotal) * tempQuantity;
-  // }
+    });
+  };
 
   const calculateOriginalTotal = () => {
-     let basePrice = Number(Item?.normal_price);
+    let basePrice = Number(Item?.normal_price);
     let optionTotal = selectedOption ? selectedOption.price : 0;
-    let addonsTotal = selectedAddons.reduce((sum, addon) => sum + Number(addon.addon_price), 0);
+    let addonsTotal = selectedAddons.reduce(
+      (sum, addon) => sum + Number(addon.addon_price),
+      0
+    );
     let total = (basePrice + optionTotal + addonsTotal) * tempQuantity;
-      console.log("Base:", basePrice, "Option:", optionTotal, "Addons:", addonsTotal, "Qty:", tempQuantity, "Total:", total);
+    console.log(
+      "Base:",
+      basePrice,
+      "Option:",
+      optionTotal,
+      "Addons:",
+      addonsTotal,
+      "Qty:",
+      tempQuantity,
+      "Total:",
+      total
+    );
     return Number(total.toFixed(2));
-  }
+  };
 
   const calculateTotal = () => {
     let basePrice = Number(price(Item?.id));
     let optionTotal = selectedOption ? selectedOption.price : 0;
-    let addonsTotal = selectedAddons.reduce((sum, addon) => sum + Number(addon.addon_price), 0);
+    let addonsTotal = selectedAddons.reduce(
+      (sum, addon) => sum + Number(addon.addon_price),
+      0
+    );
     let total = (basePrice + optionTotal + addonsTotal) * tempQuantity;
-      console.log("Base:", basePrice, "Option:", optionTotal, "Addons:", addonsTotal, "Qty:", tempQuantity, "Total:", total);
+    console.log(
+      "Base:",
+      basePrice,
+      "Option:",
+      optionTotal,
+      "Addons:",
+      addonsTotal,
+      "Qty:",
+      tempQuantity,
+      "Total:",
+      total
+    );
     return Number(total.toFixed(2));
-  }
+  };
 
   if (!isVisible) return null;
   return (
@@ -216,7 +255,12 @@ const ProductDetailsModal = ({ isVisible, onClose, Item }) => {
                         className="flex items-center justify-between p-2 rounded cursor-pointer bg-gray-50"
                       >
                         <div className="flex items-center gap-2">
-                          <input type="checkbox" value={addon.addon_name} checked={selectedAddons.includes(addon)} onChange={() => handleAddonChange(addon)} />
+                          <input
+                            type="checkbox"
+                            value={addon.addon_name}
+                            checked={selectedAddons.includes(addon)}
+                            onChange={() => handleAddonChange(addon)}
+                          />
                           <span>{addon.addon_name}</span>
                         </div>
                         <p>
@@ -241,9 +285,13 @@ const ProductDetailsModal = ({ isVisible, onClose, Item }) => {
           <p className="text-orange-500 font-bold">Total Amount:</p>
           <span className="flex gap-2">
             {/* <p className="line-through text-gray-500">{Currency} {calculateTotal()}</p> */}
-            <p className="line-through text-gray-500">{Currency} {calculateOriginalTotal().toFixed(2)}</p>
+            <p className="line-through text-gray-500">
+              {Currency} {calculateOriginalTotal().toFixed(2)}
+            </p>
             {/* <p className="text-orange-500 font-bold">{Currency} {price(Item?.id)}</p> */}
-            <p className="text-orange-500 font-bold">{Currency} {calculateTotal().toFixed(2)}</p>
+            <p className="text-orange-500 font-bold">
+              {Currency} {calculateTotal().toFixed(2)}
+            </p>
           </span>
         </div>
 
@@ -271,6 +319,53 @@ const ProductDetailsModal = ({ isVisible, onClose, Item }) => {
 
           <button
             onClick={() => {
+              const variations = [];
+
+              // Handle selected option (from config.options)
+              if (selectedOption) {
+                const allOptions =
+                  config?.options?.flatMap((opt) => {
+                    try {
+                      return JSON.parse(opt.option_values);
+                    } catch {
+                      return [];
+                    }
+                  }) || [];
+
+                const optionDetail = allOptions.find(
+                  (opt) => opt.name === selectedOption.name
+                );
+
+                if (optionDetail) {
+                  variations.push({
+                    name: optionDetail.name,
+                    values: {
+                      label: `Quantity: ${tempQuantity}`,
+                      price: optionDetail.price,
+                    },
+                  });
+                }
+              }
+
+              // Handle selected addons (from config.addons)
+              if (selectedAddons && selectedAddons.length > 0) {
+                selectedAddons.forEach((addon) => {
+                  const addonDetail = config?.addons?.find(
+                    (a) => a.addon_name === addon.addon_name
+                  );
+
+                  if (addonDetail) {
+                    variations.push({
+                      name: addonDetail.addon_name,
+                      values: {
+                        label: "Add-on",
+                        price: addonDetail.addon_price,
+                      },
+                    });
+                  }
+                });
+              }
+
               addToCart(
                 {
                   id: Item.id,
@@ -280,7 +375,9 @@ const ProductDetailsModal = ({ isVisible, onClose, Item }) => {
                   option_values: Item.option_values,
                   store_name: Item.store_name,
                   store_id: Item.store_id,
+                  attribute_id: Item.attribute_id,
                   discount: Item.discount,
+                  variations: JSON.stringify(variations),
                 },
                 tempQuantity
               );

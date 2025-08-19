@@ -61,13 +61,13 @@ const MobilePage = () => {
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis, quos recusandae earum accusamus, suscipit ratione in alias perspiciatis aliquid, ex itaque quis obcaecati unde esse error blanditiis officiis corporis voluptas ab explicabo fugiat. Non omnis iusto, sint suscipit amet mollitia? Cumque expedita cum ducimus libero repellendus quam? Sint, magni tempora! Perferendis laudantium id porro voluptas maiores? Sunt cupiditate quaerat qui laborum ut! Nihil maiores est ducimus minus sapiente, voluptate tempora iure fuga eaque commodi, harum ratione officiis dolorum placeat ad earum esse quae totam voluptas repudiandae consequuntur possimus quam consectetur. Quos, rerum dolorem cupiditate ullam, non est dolores sequi reiciendis iusto laboriosam eius vitae repellendus quidem consectetur. At unde iste nihil nisi aliquid, dignissimos inventore impedit ad eum atque et, saepe culpa nulla! Laborum error, iure a, perspiciatis eum ab dolor cupiditate odit consectetur vitae neque sed esse blanditiis magni accusantium distinctio tenetur unde exercitationem. Suscipit accusamus eum optio provident.</p>
           </div>
       )}
-      {/* {screen === "wishlist" && <div className="p-5">Wishlist Screen</div>}
+      {screen === "wishlist" && <div className="p-5">Wishlist Screen</div>}
       {screen === "cart" && <div className="p-5">Cart Screen</div>}
       {screen === "menu" && (
         <div>
           <GuestUser />
         </div>
-      )} */}
+      )}
 
       <MobileMenuBar active={screen} onScreenChange={setScreen} />
 
