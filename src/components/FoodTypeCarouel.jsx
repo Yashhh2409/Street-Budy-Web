@@ -50,7 +50,9 @@ const CardComponent = () => {
       </span>
 
       <div className="flex space-x-2.5 md:space-x-0.5 overflow-x-auto no-scrollbar">
-        {foodCardData.length > 0 ? (
+        {foodCardData.length === 0 ? (
+          <ShimmerMenu cardsLength={15} className="w-16 h-16 md:w-24 md:h-24" variant="flex"/>
+        ) : (
           foodCardData.map((item) => (
             <FoodTypeCard
               key={item.id}
@@ -59,9 +61,7 @@ const CardComponent = () => {
               title={item.title}
             />
           ))
-        ) : (
-          <ShimmerMenu CardsLength={foodCardData.length} />
-        )}
+        ) }
       </div>
     </section>
   );

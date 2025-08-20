@@ -13,7 +13,6 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
 
   // if user loogedin cartItems has user cart if not then cartItems from localstorage
-
   // Handle fetching cart
   useEffect(() => {
     const syncCart = async () => {
@@ -32,6 +31,7 @@ export const CartProvider = ({ children }) => {
 
         // Check if localStorage cart exists (guest cart)
         const localStorageCart = localStorage.getItem("cart");
+
         if (localStorageCart) {
           const items = JSON.parse(localStorageCart);
 
@@ -71,8 +71,6 @@ export const CartProvider = ({ children }) => {
 
     syncCart();
   }, [user]);
-
-  console.log("CartItems:", cartItems);
 
   const addToCart = async (product, selectedQuantity = 1) => {
     if (!user) {

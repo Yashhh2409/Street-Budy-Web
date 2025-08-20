@@ -10,6 +10,7 @@ import Modal from "./Custom/Modal";
 import useBodyScrollLock from "./Custom/useBodyScrollLock";
 import { MyAppContext } from "@/context/MyAppContext";
 import ProductDetailsModal from "./Custom/ProductDetailsModal";
+import ShimmerMenu from "./shimmer/ShimmerMenu";
 
 // const cardData = [
 //   {
@@ -193,23 +194,27 @@ const CardsCarousel = () => {
             modules={[Scrollbar]}
             className="mySwiper my-5 flex flex-wrap space-x-4"
           >
-            {products.map((item, i) => (
-              <SwiperSlide key={i} className="px-2 mb-5">
-                <Cards
-                  onClick={() => {
-                    setSelectedCard(item); // full product object
-                    SetShowModal(true);
-                  }}
-                  Img={item.img}
-                  Offer={`${Currency} ${item.discount} OFF`}
-                  Restaurant={item.store_name}
-                  Name={item.product_name}
-                  OriginalPrice={item.normal_price}
-                  Price={price(item.id)}
-                  isVeg={item.isVeg}
-                />
-              </SwiperSlide>
-            ))}
+            {products.length === 0 ? (
+              <ShimmerMenu cardsLength={15} className="max-w-[200px] h-[280px]" variant="swiper"/>
+            ) : (
+              products.map((item, i) => (
+                <SwiperSlide key={i} className="px-2 mb-5">
+                  <Cards
+                    onClick={() => {
+                      setSelectedCard(item); // full product object
+                      SetShowModal(true);
+                    }}
+                    Img={item.img}
+                    Offer={`${Currency} ${item.discount} OFF`}
+                    Restaurant={item.store_name}
+                    Name={item.product_name}
+                    OriginalPrice={item.normal_price}
+                    Price={price(item.id)}
+                    isVeg={item.isVeg}
+                  />
+                </SwiperSlide>
+              ))
+            ) }
           </Swiper>
         </div>
       </div>

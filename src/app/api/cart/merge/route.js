@@ -16,35 +16,58 @@ export const POST = async (req) => {
     const db = await connectDB();
 
     for (let item of items) {
+      const imageUrl = item.product_img;
+      const imageFilename = imageUrl
+        ? imageUrl.split("https://admin.streetbuddy.in/").pop()
+        : "";
+
       const [rows] = await db.execute(
-        "SELECT * FROM tbl_cart_data WHERE user_id = ? AND product_id = ?",
+        "SELECT * FROM tbl_cart_data WHERE uid = ? AND product_id = ?",
         [uid, item.id]
       );
 
       if (rows.length > 0) {
         // Item already exists update quantity
         await db.execute(
-          "UPDATE tbl_cart_data SET quantity = quantity = ? WHERE user_id = ? AND product_id = ?",
+          "UPDATE tbl_cart_data SET quantity = ? WHERE uid = ? AND product_id = ?",
           [item.quantity, uid, item.id]
         );
       } else {
         // Insert new item
         await db.execute(
-          "INSERT INTO tbl_cart_data (user_id, product_id, title, price, image, quantity) VALUES (?, ?, ?, ?, ?, ?)",
-          [uid, item.id, item.title, item.price, item.image, item.quantity || 1]
+          `INSERT INTO tbl_cart_data 
+      (uid, store_id, product_id, attribute_id, quantity, price, product_title, product_img, cart_type, variation, visible, subscription_data) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            uid,
+            item.store_id,
+            item.id,
+            item.attribute_id,
+            item.quantity || 1,
+            item.price,
+            item.product_title,
+            imageFilename,
+            item.cart_type || "normal",
+            item.variations,
+            item.visible || 1,
+            item.subscription_data || null,
+          ]
         );
       }
     }
 
     // fetch updated cart
     const [updated] = await db.execute(
-      "SELECT * FROM tbl_cart_data WHERE user_id = ?",
+      "SELECT * FROM tbl_cart_data WHERE uid = ?",
       [uid]
     );
 
     return NextResponse.json(updated);
   } catch (error) {
     console.error("Merge error:", error);
-    return NextResponse.json({message: "Error merging cart"}, {status: 500})
+    return NextResponse.json(
+      { message: "Error merging cart" },
+      { status: 500 }
+    );
   }
 };

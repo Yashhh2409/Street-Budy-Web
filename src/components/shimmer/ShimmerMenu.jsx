@@ -1,18 +1,36 @@
 import React from "react";
+import { SwiperSlide } from "swiper/react";
 
-const ShimmerMenu = ({ cardsLength = 12 }) => {
+const ShimmerMenu = ({ cardsLength, className, variant = "flex" }) => {
   const shimmerCards = [];
 
   for (let i = 0; i < cardsLength; i++) {
-    shimmerCards.push(
-      <div
-        key={i}
-        className="w-16 h-16 md:w-24 md:h-24 bg-gray-300 rounded-md animate-pulse"
-      ></div>
-    );
+    if (variant === "swiper") {
+      shimmerCards.push(
+      
+      
+        <SwiperSlide key={i} className="px-2 mb-5 flex items-center">
+          <div
+            className={`${className} bg-gray-300 rounded-md animate-pulse`}
+          ></div>
+        </SwiperSlide>
+      );
+    } else {
+      shimmerCards.push(
+        <div
+          key={i}
+          className={`${className} bg-gray-300 rounded-md animate-pulse`}
+        ></div>
+      );
+    }
   }
 
-  return <div className="flex gap-2 md:gap-4">{shimmerCards}</div>;
+  // Flex mode wraps inside a flex container
+  return variant === "flex" ? (
+    <div className="flex gap-2 md:gap-4">{shimmerCards}</div>
+  ) : (
+    <>{shimmerCards}</>
+  );
 };
 
 export default ShimmerMenu;

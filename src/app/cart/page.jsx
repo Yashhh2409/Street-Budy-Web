@@ -256,7 +256,7 @@ const page = () => {
                     <span className="py-2 flex items-center justify-between">
                       <p>Variations</p>
                       <p>
-                        {Currency} {totals.optionsTotal}
+                       (+) {Currency} {totals.optionsTotal}
                       </p>
                     </span>
                   )}
@@ -264,7 +264,7 @@ const page = () => {
                   <span className="py-2 flex items-center justify-between">
                     <p>Discount</p>
                     <p>
-                      {Currency} {totals.discountTotal}
+                      (-) {Currency} {totals.discountTotal}
                     </p>
                   </span>
 
@@ -272,7 +272,7 @@ const page = () => {
                     <span className="py-2 flex items-center justify-between">
                       <p>Addons</p>
                       <p>
-                        {Currency} {totals.addonsTotal}
+                        (+) {Currency} {totals.addonsTotal}
                       </p>
                     </span>
                   )}

@@ -23,8 +23,8 @@ const ProductDetailsModal = ({ isVisible, onClose, Item }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedAddons, setSelectedAddons] = useState([]);
 
-  console.log("selectedOption", selectedOption);
-  console.log("selectedAddons", selectedAddons);
+  // console.log("selectedOption", selectedOption);
+  // console.log("selectedAddons", selectedAddons);
 
   const cartItem = cartItems.find((c) => c.product_id === Item?.id);
   const quantity = cartItem ? cartItem.quantity : 1;
@@ -40,30 +40,7 @@ const ProductDetailsModal = ({ isVisible, onClose, Item }) => {
   });
 
   // Reset options, addons when new product is selected
-useEffect(() => {
-  if (Item) {
-    if (Item.variation) {
-      const variation = typeof Item.variation === "string"
-        ? JSON.parse(Item.variation)
-        : Item.variation;
 
-      // First entry = option (like Large, Medium, etc.)
-      const option = variation[0]; 
-      setSelectedOption(option?.values || null);
-
-      // Rest entries = addons
-      const addons = variation.slice(1).map(v => v.values);
-      setSelectedAddons(addons);
-
-      // Restore quantity
-      setTempQuantity(Item.quantity || 1);
-    } else {
-      setSelectedOption(null);
-      setSelectedAddons([]);
-      setTempQuantity(1);
-    }
-  }
-}, [Item?.id]);
 
 
 
@@ -149,6 +126,8 @@ useEffect(() => {
     );
     return Number(total.toFixed(2));
   };
+
+
 
   if (!isVisible) return null;
   return (
