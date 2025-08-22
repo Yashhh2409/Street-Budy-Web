@@ -86,7 +86,7 @@ const SignUp = ({
   // console.log("Form Data:", formData);
 
   return (
-    <div className="w-full mt-4 p-5 overflow-y-auto">
+    <div className="w-full p-5 overflow-y-auto">
       <h1 className="text-lg font-bold">Sign Up</h1>
       <div className="w-full text-gray-400 flex flex-wrap items-center gap-4 mt-4">
         <div className="w-full md:w-[48%] flex items-center gap-5 border-2 border-gray-400 px-2 py-2 rounded-md">

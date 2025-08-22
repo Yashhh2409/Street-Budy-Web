@@ -19,6 +19,8 @@ import Footer from "@/components/Footer";
 import { CartContext } from "@/context/CartContext";
 import ProductDetailsModal from "@/components/Custom/ProductDetailsModal";
 import useBodyScrollLock from "@/components/Custom/useBodyScrollLock";
+import { useRouter } from "next/navigation";
+import SignIn from "@/components/Custom/SignIn";
 
 const DeliveryOptions = [
   {
@@ -71,10 +73,13 @@ const page = () => {
 
   useBodyScrollLock(showModal);
 
-  const { Currency, userCartItems, price2, products } =
-    useContext(MyAppContext);
+  const router = useRouter();
 
-  const { cartItems, updateCart, calculateCartSummary } =
+  const { Currency, products } = useContext(MyAppContext);
+
+  const { user } = useContext(MyAppContext);
+
+  const { cartItems, updateCart, calculateCartSummary, cartCount } =
     useContext(CartContext);
 
   const totals = calculateCartSummary(cartItems, products);
@@ -256,7 +261,7 @@ const page = () => {
                     <span className="py-2 flex items-center justify-between">
                       <p>Variations</p>
                       <p>
-                       (+) {Currency} {totals.optionsTotal}
+                        (+) {Currency} {totals.optionsTotal}
                       </p>
                     </span>
                   )}
@@ -305,7 +310,12 @@ const page = () => {
                   </p>
                 </span>
 
-                <button className="w-full bg-orange-500 rounded-md text-white tracking-wider py-1.5 font-bold cursor-pointer">
+                <button
+                  onClick={() => router.push("/checkout")}
+                  className={`w-full ${
+                    cartCount > 0 ? "bg-orange-500" : "bg-gray-500"
+                  }  rounded-md text-white tracking-wider py-1.5 font-bold cursor-pointer`}
+                >
                   Confirm Delivery Details
                 </button>
               </div>
@@ -321,7 +331,12 @@ const page = () => {
             </p>
           </span>
 
-          <button className="w-full bg-orange-500 rounded-md text-white tracking-wider py-1.5 font-bold cursor-pointer">
+          <button
+            onClick={() => router.push("/checkout")}
+            className={`w-full ${
+              cartCount > 0 ? "bg-orange-500" : "bg-gray-500"
+            }  rounded-md text-white tracking-wider py-1.5 font-bold cursor-pointer`}
+          >
             Confirm Delivery Details
           </button>
         </div>

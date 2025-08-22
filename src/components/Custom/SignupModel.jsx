@@ -33,12 +33,12 @@ const SignupModel = ({ setIsOpen }) => {
           <div className="w-full flex items-center justify-center mt-10">
             <div className="flex items-center gap-2">
               <Image
-                src={"/assets/sb-logo.png"}
+                src={"/assets/sb-logo-new.png"}
                 width={100}
                 height={100}
-                className="w-[35px] h-[40px]"
+                className="w-[80px] h-[80px]"
               />
-              <p className="font-bold text-2xl text-orange-500">StreetBuddy</p>
+              {/* <p className="font-bold text-2xl text-orange-500">StreetBuddy</p> */}
             </div>
           </div>
 

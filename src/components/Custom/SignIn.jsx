@@ -68,7 +68,7 @@ const SignIn = ({ PasswordToggle, isPassVisible, PageToggle }) => {
   };
 
   return (
-    <div className="w-full flex flex-col md:flex-row items-center justify-center p-5 mt-4">
+    <div className="w-full flex flex-col md:flex-row items-center justify-center p-5">
       <form className="w-full md:w-[44%] flex flex-col gap-4">
         <h1 className="text-lg font-bold ">Login</h1>
         <input

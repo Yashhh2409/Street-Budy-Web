@@ -1,3 +1,4 @@
+import { MyAppContext } from "@/context/MyAppContext";
 import {
   faFacebook,
   faInstagram,
@@ -6,7 +7,8 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useContext } from "react";
 
 const footerLinks = [
   {
@@ -33,18 +35,27 @@ const footerLinks = [
 ];
 
 const Footer = () => {
+
+  const {isSignupOpen, SignupModelToggle} = useContext(MyAppContext);
+
+  const router = useRouter();
   return (
     <div className="w-full bg-gray-700 md:px-48 hidden md:block">
       <div className="w-full flex gap-4 border-b-2 border-gray-300">
         <div className="w-2/5 flex flex-col gap-3 p-5">
-          <span className="flex gap-2 items-center">
+          <span className="flex  gap-2 items-center">
+            <div className="w-[80px] h-[80px]">
+
+          
             <Image
-              src={"/assets/sb-logo.png"}
-              width={25}
-              height={25}
+              src={"/assets/sb-logo-new.png"}
+              width={100}
+              height={100}
               alt="Street buddy"
+              className="w-full h-full"
             />
-            <p className="text-lg font-bold text-orange-500">StackFood</p>
+              </div>
+            <p className="text-lg font-bold text-orange-500">Street Buddy</p>
           </span>
           <p className="text-white font-bold">
             Subscribe to our news letter to get latest updates
@@ -86,29 +97,28 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="w-3/5 bg-gray-600 p-5 m-4 rounded-md flex gap-4">
+        <div className="w-3/5 bg-gray-600 p-5 m-4 rounded-md flex gap-20">
           <div className="flex flex-col">
             <p className="font-bold text-[15px] text-white">About</p>
           <div className="text-sm text-gray-500">
-            <p className="">About us</p>
-            <p>Categories</p>
+            <p className="cursor-pointer hover:text-orange-500 text-sm text-gray-50">About us</p>
+            <p onClick={() => router.push("/categories")} className="cursor-pointer hover:text-orange-500 text-sm text-gray-50">Categories</p>
           </div>
           </div>
 
           <div className="flex flex-col">
-            <p className="font-bold text-[15px] text-white">About</p>
+            <p className="font-bold text-[15px] text-white">Quick Links</p>
           <div className="text-sm text-gray-500">
-            <p className="">About us</p>
-            <p>Categories</p>
+            <p onClick={() => router.push("/privacy-policy")} className="cursor-pointer hover:text-orange-500 text-sm text-gray-50">Privacy Policy</p>
           </div>
           </div>
 
 
           <div className="flex flex-col">
-            <p className="font-bold text-[15px] text-white">About</p>
+            <p className="font-bold text-[15px] text-white">For users</p>
           <div className="text-sm text-gray-500">
-            <p className="">About us</p>
-            <p>Categories</p>
+            <p onClick={SignupModelToggle} className="cursor-pointer hover:text-orange-500 text-sm text-gray-50">Login</p>
+            <p className="cursor-pointer hover:text-orange-500 text-sm text-gray-50">Help & Support</p>
           </div>
           </div>
         </div>

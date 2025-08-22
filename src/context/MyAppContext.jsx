@@ -16,6 +16,8 @@ export const MyAppProvider = ({ children }) => {
   const [userCartItems, setUserCartItems] = useState([]);
   const [fetchedCartItems, setFetchedCartItems] = useState([]);
   const [productConfig, setProductConfig] = useState({});
+  const [theme, setTheme] = useState("light");
+  const [isSignupOpen, setSignupOpen] = useState(false);
 
   const [restaurantList, setRestaurantList] = useState([]);
   const [mcatList, setmcatList] = useState([]);
@@ -25,6 +27,20 @@ export const MyAppProvider = ({ children }) => {
   const [countries, setCountry] = useState([]);
 
   const Currency = "₹";
+
+  const SignupModelToggle = () => {
+    setSignupOpen((prev) => !prev);
+  };
+
+  //Theme 
+  useEffect(() => {
+          if (theme === "dark") {
+            setTheme(document.documentElement.classList.add("dark"));
+            
+          } else {
+            setTheme(document.documentElement.classList.remove("dark"));
+          }
+        }, [theme]);
 
   // price
   const price = (Pid) => {
@@ -248,6 +264,9 @@ export const MyAppProvider = ({ children }) => {
 
   const value = {
     Currency,
+    theme,
+    isSignupOpen,
+    SignupModelToggle,
     formatImagePaths,
     restaurantList,
     mcatList,

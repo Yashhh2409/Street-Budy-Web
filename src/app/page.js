@@ -4,14 +4,16 @@ import DesktopHeader from "@/components/DesktopHeader";
 import DesktopPage from "@/components/DesktopPage";
 import MobileHeader from "@/components/MobileHeader";
 import MobilePage from "@/components/MobilePage";
+import { MyAppContext } from "@/context/MyAppContext";
 import useMediaQuery from "@/hooks/useMediaQuery";
-import React from "react";
+import React, { useContext } from "react";
 
 const page = () => {
   const isMobile = useMediaQuery("(max-width: 767px)");
+  const {theme} = useContext(MyAppContext);
 
   return (
-    <>
+    <div className="bg-[rgb(var(--color-bg))] text-[rgb(var(--color-text))]">
       {/* <div className="block md:hidden mb-25">
         <MobileHeader />
       </div> */}
@@ -27,7 +29,7 @@ const page = () => {
       <div className="hidden md:block">
         <DesktopPage />
       </div>
-    </>
+    </div>
   );
 };
 

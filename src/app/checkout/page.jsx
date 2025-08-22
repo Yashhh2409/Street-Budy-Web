@@ -115,7 +115,7 @@ const page = () => {
           }  w-full px-4 py-1 md:px-48 flex flex-col md:flex-row items-start justify-between gap-1`}
         >
           <div className="w-full md:w-3/5 p-1 flex flex-col gap-2">
-            <div className="bg-white w-full py-4 rounded-lg flex items-center justify-between px-4">
+            {/* <div className="bg-white w-full py-4 rounded-lg flex items-center justify-between px-4">
               <div>
                 <p className="font-bold">Wants to Unlock More Features?</p>
                 <p className="text-sm text-orange-500 hover:bg-orange-100 w-fit px-2 rounded-full transition-colors duration-300 cursor-pointer">
@@ -125,7 +125,7 @@ const page = () => {
               <div className="border-2 w-5 h-5 rounded-full flex items-center justify-center">
                 <FontAwesomeIcon icon={faInfo} className="text-xs" />
               </div>
-            </div>
+            </div> */}
 
             <div className="bg-white w-full py-4 rounded-lg px-4">
               <p className="font-bold mb-4">Delivery Option</p>

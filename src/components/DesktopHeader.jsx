@@ -4,7 +4,7 @@ import TopBar from "./TopBar";
 
 const DesktopHeader = () => {
   return (
-    <div className="">
+    <div className="bg-[rgb(var(--color-bg))] text-[rgb(var(--color-text))]">
       <TopBar />
       <Navbar />
     </div>

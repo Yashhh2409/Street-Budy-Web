@@ -22,15 +22,16 @@ import { CartContext } from "@/context/CartContext";
 const Navbar = () => {
   const { user } = useContext(AuthContext);
   const { cartCount } = useContext(CartContext);
+  const {isSignupOpen, SignupModelToggle} = useContext(MyAppContext);
 
-  const [isSignupOpen, setSignupOpen] = useState(false);
+  // const [isSignupOpen, setSignupOpen] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
 
   console.log("User:", user);
 
-  const SignupModelFun = () => {
-    setSignupOpen((prev) => !prev);
-  };
+  // const SignupModelFun = () => {
+  //   setSignupOpen((prev) => !prev);
+  // };
 
   const MenuModalToggle = () => {
     setModalOpen((prev) => !prev);
@@ -46,22 +47,22 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="w-full bg-white p-5 flex items-center justify-around px-48">
-        <div className="w-full bg-transparent flex items-center justify-between">
-          <div className="flex items-center gap-15">
+      <div className="w-full flex items-center justify-around px-48">
+        <div className="w-full flex items-center justify-between">
+          <div className="flex items-center gap-10">
             {/* logo  */}
-            <Link href={"/"} className="flex items-center gap-2">
+            <Link href={"/"} className="flex w-full h-[80px] items-center">
               <Image
-                src="/assets/sb-logo.png"
-                width={50}
-                height={50}
+                src="/assets/sb-logo-new.png"
+                width={80}
+                height={80}
                 alt="logo"
-                className="w-[30px]"
+                className="w-full h-full"
               />
-              <p className="text-[25px] font-bold text-amber-600">StackFood</p>
+              {/* <p className="text-[25px] font-bold text-amber-600 text-nowrap">Street Buddy</p> */}
             </Link>
             {/* menu  */}
-            <div className="w-full flex items-center gap-4 text-[16px]">
+            <div className="w-full flex items-center gap-4 text-[18px]">
               <ul>
                 <li className="hover:text-orange-500 transition-colors duration-200">
                   <a href="/">Home</a>
@@ -85,31 +86,37 @@ const Navbar = () => {
             </div>
           </div>
           <span className="text-sm">
-            {user ? <h1>{user.email}</h1> : <h1>Welcome Guest</h1>}
+            {user ? <h1>Welcome, {user.email}</h1> : <h1>Welcome, Guest</h1>}
           </span>
           {/* icons  */}
-          <div className="flex items-center gap-x-8">
+          <div className="flex items-center gap-x-4">
+            <div className="cursor-pointer w-10 h-10 hover:bg-orange-100 rounded-full flex items-center justify-center transition-colors duration-200">
+
             <FontAwesomeIcon
               icon={faMagnifyingGlass}
-              className="text-gray-500 text-xl"
-            />
-            <FontAwesomeIcon icon={faBell} className="text-gray-500 text-xl" />
+              className="text-gray-500 text-[20px] hover:text-orange-400 transition-colors"
+              />
+              </div>
+            <div className="cursor-pointer w-10 h-10 hover:bg-orange-100 rounded-full flex items-center justify-center transition-colors duration-200">
+
+            <FontAwesomeIcon icon={faBell} className="text-gray-500 text-[20px] hover:text-orange-400 transition-colors" />
+            </div>
             <Link
               href={"/cart"}
-              className="relative cursor-pointer w-8 h-8 hover:bg-orange-100 rounded-full flex items-center justify-center transition-colors duration-200 text-[16px]"
+              className="relative cursor-pointer w-10 h-10 hover:bg-orange-100 rounded-full flex items-center justify-center transition-colors duration-200"
             >
               <FontAwesomeIcon
                 icon={faCartShopping}
-                className="text-gray-500 text-xl"
+                className="text-gray-500 text-[20px] hover:text-orange-400"
               />
 
               {cartCount > 0 && (
-                <div className="absolute -top-1 right-0 text-[12px] font-bold w-4 h-4 bg-orange-400 text-white p-2 flex items-center justify-center rounded-full">
+                <div className="absolute top-0.5 right-0 text-[12px] font-bold w-4 h-4 bg-orange-400 text-white p-2 flex items-center justify-center rounded-full">
                   {cartCount}
                 </div>
               )}
             </Link>
-            <div className="flex space-x-3 cursor-pointer bg-orange-400 tracking-wide text-white text-sm px-4 py-1 font-semibold rounded-sm">
+            <div className="flex space-x-3 cursor-pointer bg-orange-400 tracking-wide text-white text-sm px-4 py-1 font-bold rounded-sm">
               {/* <FontAwesomeIcon
                 icon={faLock}
                 className="text-gray-500 text-xl"
@@ -117,16 +124,16 @@ const Navbar = () => {
               {user ? (
                 <h1 onClick={handleLogout}>Logout</h1>
               ) : (
-                <div onClick={SignupModelFun}>Sign in</div>
+                <div onClick={SignupModelToggle}>Sign in</div>
               )}
             </div>
             <span
               onClick={MenuModalToggle}
-              className="cursor-pointer w-8 h-8 hover:bg-orange-100 rounded-full flex items-center justify-center transition-colors duration-200"
+              className="cursor-pointer w-10 h-10 hover:bg-orange-100 rounded-full flex items-center justify-center transition-colors duration-200"
             >
               <FontAwesomeIcon
                 icon={faBars}
-                className="text-gray-500 text-[16px]"
+                className="text-gray-500 text-[20px] hover:text-orange-400 transition-colors"
               />
             </span>
           </div>{" "}
@@ -137,12 +144,12 @@ const Navbar = () => {
         <MenuModal
           isModalOpen={isModalOpen}
           setModalOpen={setModalOpen}
-          SignupModelFun={SignupModelFun}
+          SignupModelFun={SignupModelToggle}
           handleLogout={handleLogout}
         />
       )}
 
-      {isSignupOpen && <SignupModel setIsOpen={setSignupOpen} />}
+      {isSignupOpen && <SignupModel setIsOpen={SignupModelToggle} />}
     </>
   );
 };

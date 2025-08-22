@@ -192,13 +192,19 @@ const CardsCarousel = () => {
               },
             }}
             modules={[Scrollbar]}
-            className="mySwiper my-5 flex flex-wrap space-x-4"
+            className="mySwiper my-5 flex space-x-4"
           >
             {products.length === 0 ? (
-              <ShimmerMenu cardsLength={15} className="max-w-[200px] h-[280px]" variant="swiper"/>
+              <div className="flex w-full items-center ">
+                <ShimmerMenu
+                  cardsLength={15}
+                  className="max-w-[200px] h-[280px]"
+                  variant="swiper"
+                />
+              </div>
             ) : (
               products.map((item, i) => (
-                <SwiperSlide key={i} className="px-2 mb-5">
+                <SwiperSlide key={i} className="px-2 mb-5 cursor-pointer">
                   <Cards
                     onClick={() => {
                       setSelectedCard(item); // full product object
@@ -214,7 +220,7 @@ const CardsCarousel = () => {
                   />
                 </SwiperSlide>
               ))
-            ) }
+            )}
           </Swiper>
         </div>
       </div>

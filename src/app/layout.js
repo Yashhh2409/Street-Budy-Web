@@ -7,6 +7,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { CartProvider } from "@/context/CartContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +30,10 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="bg-[#F5F6F8] overflow-y-auto w-full overflow-x-hidden">
+        <div className="overflow-y-auto w-full overflow-x-hidden">
+          <ThemeProvider>
+
+          
           <AuthProvider>
             <MyAppProvider>
               <CartProvider>
@@ -38,6 +42,7 @@ export default function RootLayout({ children }) {
               </CartProvider>
             </MyAppProvider>
           </AuthProvider>
+          </ThemeProvider>
         </div>
       </body>
     </html>
