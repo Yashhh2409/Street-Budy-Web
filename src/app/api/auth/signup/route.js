@@ -36,8 +36,10 @@ export const POST = async (req) => {
 
     // insert into db
     const [result] = await db.query(
-      "INSERT INTO tbl_user (name, email, ccode, mobile, refercode, parentcode, password, registartion_date) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())",
-      [name, email, ccode, mobile, userReferCode, parentcode || null, hashedPassword]
+      `INSERT INTO tbl_user 
+   (name, email, ccode, mobile, refercode, parentcode, password, registartion_date, ustatus) 
+   VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)`,
+  [name, email, ccode, mobile, userReferCode, parentcode || null, hashedPassword, 1]
     );
 
     const userId = result.insertId;
