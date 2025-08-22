@@ -1,51 +1,68 @@
-import { signinToken } from "@/lib/auth";
 import { NextResponse } from "next/server";
-const {connectDB} = require("@/lib/db");
-const bcrypt = require("bcryptjs");
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+const { connectDB } = require("@/lib/db");
 
 export const POST = async (req) => {
-    try {
-        const db = await connectDB();
-        const {name, email, ccode, mobile, refercode, password, confirmPassword, parentcode} = await req.json();
 
-        if(!name || !email || !password || !mobile || !confirmPassword) {
-            return NextResponse.json({error: "Missing required fileds"}, 
-                {status: 400}
-            );
-        }
+    const db = await connectDB();
+  try {
+    const body = await req.json();
+    const { name, email, ccode, mobile, password, confirmPassword, refercode, parentcode } = body;
 
-        if(password !== confirmPassword) {
-            return NextResponse.json({error: "Password & confirm password not matching"}, {status: 400});
-        }
+    if (!name || !email || !mobile || !password || !confirmPassword) {
+      return NextResponse.json({ error: "All required fields must be filled" }, { status: 400 });
+    }
 
-        const [existing] = await db.query('SELECT id FROM tbl_user WHERE email = ?', [email]);
+    if (password !== confirmPassword) {
+      return NextResponse.json({ error: "Passwords do not match" }, { status: 400 });
+    }
 
-        if(existing.length > 0 ) {
-            return NextResponse.json({error: "User already exists"}, {status: 409})
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const now = new Date();
-
-        const [result] = await db.query(`INSERT INTO tbl_user (name, email, ccode, mobile, refercode, parentcode, password, registartion_date) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [name, email, ccode, mobile, refercode || 0, parentcode || null, hashedPassword, now]
+    // check if user exists
+    const [existing] = await db.query(
+      "SELECT id FROM tbl_user WHERE email = ? OR mobile = ?",
+      [email, mobile]
     );
 
-    const token = signinToken({id: result.insertId, email});
-
-    const res  = NextResponse.json({message: "Signup successful", token});
-    res.cookies.set('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: "lax",
-        path: '/',
-    })
-
-    return res;
-
-    } catch (error) {
-         console.error(error);
-    return NextResponse.json({ error: 'Signup failed' }, { status: 500 });
+    if (existing.length > 0) {
+      return NextResponse.json({ error: "Email or Mobile already registered" }, { status: 400 });
     }
-}
+
+    // hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // generate unique refercode
+    const userReferCode = refercode || Math.floor(100000 + Math.random() * 900000).toString();
+
+    // insert into db
+    const [result] = await db.query(
+      "INSERT INTO tbl_user (name, email, ccode, mobile, refercode, parentcode, password, registartion_date) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())",
+      [name, email, ccode, mobile, userReferCode, parentcode || null, hashedPassword]
+    );
+
+    const userId = result.insertId;
+
+    // generate JWT
+    const token = jwt.sign({ id: userId, email }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    // set cookie
+    const response = NextResponse.json({
+      message: "Signup successful",
+      user: { id: userId, name, email, mobile, refercode: userReferCode },
+    });
+
+    response.cookies.set("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 7 * 24 * 60 * 60, // 7 days
+      path: "/",
+    });
+
+    return response;
+  } catch (err) {
+    console.error("Signup error:", err);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
+};

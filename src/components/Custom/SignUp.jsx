@@ -15,6 +15,7 @@ import useDebounce from "./useDebounce";
 import Image from "next/image";
 import { MyAppContext } from "@/context/MyAppContext";
 import CountriesModel from "./CountriesModel";
+import { toast } from "react-toastify";
 
 const SignUp = ({
   IsPasswordVisible,
@@ -25,13 +26,11 @@ const SignUp = ({
 }) => {
   const { countries } = useContext(MyAppContext);
 
-  console.log("Signup countries", countries);
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     referCode: "",
-    ccode: "",
+    ccode: "+91", // default for now
     mobile: "",
     password: "",
     confirmPassword: "",
@@ -40,7 +39,7 @@ const SignUp = ({
 
   const handleCountriesModel = () => {
     setCountriesModelOpen((prev) => !prev);
-  }
+  };
 
   const debouncedEmail = useDebounce(formData.email, 1000);
   const debouncedCCode = useDebounce(formData.ccode, 400);
@@ -56,14 +55,13 @@ const SignUp = ({
       debouncedPassword &&
       debouncedCPassword
     ) {
-      console.log(
-        "CheckEmail:",
+      console.log("Debounced Data:", {
         debouncedEmail,
         debouncedCCode,
         debouncedMobile,
         debouncedPassword,
-        debouncedCPassword
-      );
+        debouncedCPassword,
+      });
     }
   }, [
     debouncedEmail,
@@ -74,7 +72,6 @@ const SignUp = ({
   ]);
 
   const handleChange = (e) => {
-    console.log("yash");
     const { name, value } = e.target;
 
     setFormData((prev) => ({
@@ -83,7 +80,57 @@ const SignUp = ({
     }));
   };
 
-  // console.log("Form Data:", formData);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.mobile ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/signup`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            ccode: formData.ccode,
+            mobile: formData.mobile,
+            refercode: formData.referCode || null,
+            parentcode: null,
+            password: formData.password,
+            confirmPassword: formData.confirmPassword,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Signup successful!");
+        window.location.href = "/";
+      } else {
+        toast.error(data.error || "Signup failed");
+      }
+    } catch (err) {
+      console.error("Error during signup:", err);
+      toast.error("Something went wrong, try again later.");
+    }
+  };
 
   return (
     <div className="w-full p-5 overflow-y-auto">
@@ -141,16 +188,13 @@ const SignUp = ({
         </div>
 
         <div className="w-full md:w-[48%] flex items-center gap-3 border-2 border-gray-400 px-2 py-2 rounded-md">
-
-
-
-          <div onClick={handleCountriesModel} className="flex items-center gap-2">
+          <div
+            onClick={handleCountriesModel}
+            className="flex items-center gap-2 cursor-pointer"
+          >
             <Image src={"/assets/india-logo.png"} width={25} height={25} />
-            <p>+91</p>
+            <p>{formData.ccode}</p>
           </div>
-
-          
-
 
           <hr className="h-[18px] border-[1px] bg-amber-400" />
           <span className="relative">
@@ -173,7 +217,7 @@ const SignUp = ({
         <div className="w-full md:flex items-center space-y-4 gap-4">
           <div className="relative w-full md:w-[48%]">
             <input
-              type="text"
+              type={IsPasswordVisible ? "text" : "password"}
               placeholder="Password"
               name="password"
               value={formData.password}
@@ -185,7 +229,7 @@ const SignUp = ({
 
             <div
               onClick={PasswordToggle}
-              className="absolute right-5 -top-0.5 translate-1/2"
+              className="absolute right-5 -top-0.5 translate-1/2 cursor-pointer"
             >
               {IsPasswordVisible ? (
                 <FontAwesomeIcon icon={faEye} className="" />
@@ -197,7 +241,7 @@ const SignUp = ({
 
           <div className="relative w-full md:w-[48%]">
             <input
-              type="text"
+              type={IsPasswordVisible ? "text" : "password"}
               placeholder="Confirm Password"
               name="confirmPassword"
               value={formData.confirmPassword}
@@ -209,7 +253,7 @@ const SignUp = ({
 
             <div
               onClick={PasswordToggle}
-              className="absolute right-5 -top-0.5 translate-1/2"
+              className="absolute right-5 -top-0.5 translate-1/2 cursor-pointer"
             >
               {IsPasswordVisible ? (
                 <FontAwesomeIcon icon={faEye} className="" />
@@ -223,8 +267,6 @@ const SignUp = ({
         <div className="flex items-center gap-2">
           <input
             type="checkbox"
-            name=""
-            id=""
             checked={isChecked}
             onChange={handledChecked}
             className="w-4 h-4 cursor-pointer"
@@ -239,15 +281,17 @@ const SignUp = ({
       </div>
 
       <div className="w-full flex flex-col gap-4 items-center justify-center mt-6">
-        {isChecked ? (
-          <button className="w-[200px] bg-orange-500 font-bold py-2 text-white rounded-sm cursor-pointer">
-            Sign Up
-          </button>
-        ) : (
-          <button className="w-[200px] bg-gray-500 font-bold py-2 text-white rounded-sm cursor-pointer">
-            Sign Up
-          </button>
-        )}
+        <button
+          onClick={handleSubmit}
+          className={`w-[200px] font-bold py-2 text-white rounded-sm ${
+            isChecked
+              ? "bg-orange-500 cursor-pointer"
+              : "bg-gray-500 cursor-not-allowed"
+          }`}
+          disabled={!isChecked}
+        >
+          Sign Up
+        </button>
 
         <span className="flex items-center gap-1">
           Already have account?{" "}
@@ -257,9 +301,10 @@ const SignUp = ({
         </span>
       </div>
 
-      {
-            isCountriesModelOpen && <CountriesModel setCountriesModelOpen={setCountriesModelOpen}/>
-          }
+      {/* Countries Model */}
+      {/* {isCountriesModelOpen && (
+        <CountriesModel setCountriesModelOpen={setCountriesModelOpen} />
+      )} */}
     </div>
   );
 };
